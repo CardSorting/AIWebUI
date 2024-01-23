@@ -1,0 +1,48 @@
+import { useCardLogic } from '@cardEditor/cardLogic';
+import { useCardOptions } from '@cardEditor/cardOptions';
+import { useCardPlacements } from '@cardEditor/cardStyles/hooks';
+import { FC, memo } from 'react';
+import ResistanceAmount from './fields/ResistanceAmount';
+import ResistanceType from './fields/ResistanceType';
+import RetreatCost from './fields/RetreatCost';
+import WeaknessAmount from './fields/WeaknessAmount';
+import WeaknessType from './fields/WeaknessType';
+import { Block, TypeWrapper } from './styles';
+
+const TypeBar: FC = () => {
+  const { hasTypeBar } = useCardLogic(['hasTypeBar']);
+  const { weaknessTypeId, weaknessAmount, resistanceTypeId, resistanceAmount } =
+    useCardOptions([
+      'weaknessTypeId',
+      'weaknessAmount',
+      'resistanceTypeId',
+      'resistanceAmount',
+    ]);
+  const {
+    typeBar: placement,
+    weakness: weaknessPlacement,
+    resistance: resistancePlacement,
+  } = useCardPlacements(['typeBar', 'weakness', 'resistance']);
+
+  if (!hasTypeBar) return null;
+
+  return (
+    <Block placement={placement}>
+      {!!weaknessAmount && !!weaknessTypeId && (
+        <TypeWrapper placement={weaknessPlacement}>
+          <WeaknessType />
+          <WeaknessAmount />
+        </TypeWrapper>
+      )}
+      {!!resistanceAmount && !!resistanceTypeId && (
+        <TypeWrapper placement={resistancePlacement}>
+          <ResistanceType />
+          <ResistanceAmount />
+        </TypeWrapper>
+      )}
+      <RetreatCost />
+    </Block>
+  );
+};
+
+export default memo(TypeBar);

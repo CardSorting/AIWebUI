@@ -1,0 +1,9 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://pokecardmaker.net
+
+# Sitemaps
+Sitemap: https://pokecardmaker.net/sitemap.xml

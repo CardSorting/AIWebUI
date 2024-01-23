@@ -1,0 +1,28 @@
+import { CardLogic } from '@cardEditor/cardLogic';
+
+export const defaultCardLogic: Required<CardLogic> = {
+  hasHitpoints: false,
+  hasMoves: false,
+  hasDescription: false,
+  hasName: true,
+  hasNameSymbol: false,
+  hasSubname: false,
+  hasSubtypes: false,
+  hasTypeImage: false,
+  hasMultipleTypeImages: false,
+  isAttackCostType: false,
+  isPokemonType: false,
+  isSubtypeRequired: false,
+  isVariationRequired: true,
+  hasPrevolveImg: false,
+  hasPrevolveName: false,
+  hasVariations: false,
+  hasCardInfo: true,
+  hasIllustratorName: true,
+  hasDexStats: false,
+  hasDexEntry: false,
+  hasTypeBar: false,
+  hasRotationIcon: true,
+  hasSpecialMove: false,
+  hasBadgeIcon: false,
+};
