@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import React, { FC } from 'react';
 import BasicsForm from '../blocks/BasicsForm';
 import CardTypeForm from '../blocks/BasicsForm/fields/CardTypeForm';
 import CardInfoForm from '../blocks/CardInfoForm';
@@ -11,19 +11,21 @@ import ImagesForm from '../blocks/ImagesForm';
 import ImportExport from '../atoms/ImportExport';
 import DexStatsForm from '../blocks/DexStatsForm';
 
-const CardOptionsForm: FC = () => (
-  <Form as="form">
-    <DebugForm />
-    <CardTypeForm />
-    <BasicsForm />
-    <DexStatsForm />
-    <ImagesForm />
-    <MovesForm />
-    <TypeBarForm />
-    <CardInfoForm />
-    <CardDownloader />
-    <ImportExport />
-  </Form>
-);
+const CardOptionsForm: FC = () => {
+  return (
+    <Form as="form">
+      <DebugForm />
+      <CardTypeForm />
+      <BasicsForm />
+      <DexStatsForm />
+      <ImagesForm />
+      <MovesForm />
+      <TypeBarForm />
+      <CardInfoForm />
+      <CardDownloader />
+      <ImportExport />
+    </Form>
+  );
+};
 
 export default CardOptionsForm;

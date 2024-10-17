@@ -1,3 +1,5 @@
+// pages/creator/index.page.tsx
+
 import { FC } from 'react';
 import CardOptionsForm from '@cardEditor/cardOptions/components/CardOptionsForm';
 import CardDisplay from '@cardEditor/cardStyles/components/CardDisplay';

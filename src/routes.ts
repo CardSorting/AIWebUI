@@ -11,22 +11,24 @@ const symbols = `${assets}/symbols`;
 const Routes = {
   Home: '/',
   Creator: '/creator',
+  AIImageGenerator: '/ai-image-generator',
+  Gallery: '/gallery',// Add this new route
   PrivacyPolicy: '/privacy-policy',
   CookiePolicy: '/cookie-policy',
   Contact: '/contact',
-  EMail: 'leonvdnoll@gmail.com',
+  EMail: '',
   GitHub: {
-    Home: 'https://github.com/lvandernoll/pokecardmaker.net',
-    ProjectBoard: 'https://github.com/users/lvandernoll/projects/3/',
+    Home: '',
+    ProjectBoard: '',
     Issues: {
-      New: 'https://github.com/lvandernoll/pokecardmaker.net/issues/new/choose',
+      New: '',
     },
     Discussions: {
-      Home: 'https://github.com/lvandernoll/pokecardmaker.net/discussions',
+      Home: '',
       Ideas:
-        'https://github.com/lvandernoll/pokecardmaker.net/discussions/categories/ideas',
+        '',
       Questions:
-        'https://github.com/lvandernoll/pokecardmaker.net/discussions/categories/q-a',
+        '',
     },
   },
   Assets: {

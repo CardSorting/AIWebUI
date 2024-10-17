@@ -1,3 +1,5 @@
+// src/components/inputs/FileUploader/types.ts
+
 import { PropsWithChildren, ReactNode } from 'react';
 import { TooltipProps } from '../Tooltip/types';
 

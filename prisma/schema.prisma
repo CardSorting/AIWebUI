@@ -1,0 +1,30 @@
+// prisma/schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model ImageMetadata {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  prompt    String
+  seed      Int
+  imageUrl  String
+  width     Int
+  height    Int
+  contentType String
+
+  hasNsfwConcepts String  // SQLite doesn't support arrays, so we'll store this as a string
+
+  // Store the full result as JSON
+  fullResult String  // SQLite doesn't have a JSON type, so we'll store it as a string
+
+  @@map("image_metadata")
+}

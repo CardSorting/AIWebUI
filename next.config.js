@@ -3,6 +3,6 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
 });
 
 module.exports = withBundleAnalyzer({
-  pageExtensions: ['page.tsx'],
+  pageExtensions: ['page.tsx', 'api.ts', 'api.js'],
   reactStrictMode: true,
 });
