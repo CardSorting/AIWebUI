@@ -20,7 +20,7 @@ const CookieTable: FC<CookieTableProps> = ({
     </TableRow>
     <TableRow>
       <TableCell variant="head">Provider</TableCell>
-      <TableCell>.pokecardmaker.net</TableCell>
+      <TableCell>.dreambees.art</TableCell>
     </TableRow>
     <TableRow>
       <TableCell variant="head">Service</TableCell>
@@ -30,7 +30,7 @@ const CookieTable: FC<CookieTableProps> = ({
     </TableRow>
     <TableRow>
       <TableCell variant="head">Country</TableCell>
-      <TableCell>Netherlands</TableCell>
+      <TableCell>USA</TableCell>
     </TableRow>
     <TableRow>
       <TableCell variant="head">Type</TableCell>

@@ -37,7 +37,7 @@ const MobileHeader: FC = () => {
             <AppBar position="relative" color="primary" enableColorOnDark>
               <Box px={2}>
                 <Typography variant="h4" fontWeight="bold">
-                  Pokécardmaker.net
+                  DreamBees.art
                 </Typography>
               </Box>
             </AppBar>

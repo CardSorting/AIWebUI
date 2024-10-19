@@ -37,7 +37,7 @@ const PrivacyPolicyPage: FC = () => (
         <ul>
           <li>
             Visit our website at{' '}
-            <Link href="https://pokecardmaker.net">
+            <Link href="https://dreambees.art">
               https://pokecardmaker.net
             </Link>
             , or any website of ours that links to this privacy notice

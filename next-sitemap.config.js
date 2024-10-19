@@ -1,6 +1,6 @@
 /** @type {import('next-sitemap').IConfig} */
 module.exports = {
-  siteUrl: 'https://pokecardmaker.net',
+  siteUrl: 'https://dreambees.art',
   generateRobotsTxt: true,
   changefreq: 'monthly',
 }

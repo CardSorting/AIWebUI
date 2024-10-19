@@ -5,7 +5,6 @@ import { FC, useEffect } from 'react';
 import { createEmotionCache } from '@css';
 import { Footer, Header } from '@layout';
 import CookieConsent from '@components/CookieConsent';
-import GoatCounter from '@features/analytics/components/GoatCounter';
 import { GoogleTagManagerScript } from '@features/analytics/components/GTM';
 import { useRouter } from 'next/router';
 import { useSettingsStore } from '@features/settings';
@@ -28,7 +27,7 @@ const App: FC<AppProps> = ({
 
   useEffect(() => {
     const handleRouteChange = () => {
-      window.goatcounter?.count();
+      // Removed GoatCounter tracking
     };
 
     router.events.on('routeChangeComplete', handleRouteChange);
@@ -42,7 +41,6 @@ const App: FC<AppProps> = ({
     <CacheProvider value={emotionCache}>
       <ThemeProvider theme={getTheme(theme)}>
         <GoogleTagManagerScript />
-        <GoatCounter />
         <CssBaseline />
         <Background>
           <CookieConsent />

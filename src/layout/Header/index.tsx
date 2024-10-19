@@ -13,13 +13,13 @@ const Header: FC = () => {
   return (
     <>
       {(pathname === Routes.Home || pathname === Routes.Creator) && (
-        <InvisibleHeading>Pokécardmaker.net</InvisibleHeading>
+        <InvisibleHeading>DreamBees.art</InvisibleHeading>
       )}
       <DefaultAppBar position="relative" color="primary">
         <Toolbar>
           <NextLink href={Routes.Home} passHref>
             <Typography variant="h1" component={Link} color="white">
-              Pokécardmaker.net
+              DreamBees.art
             </Typography>
           </NextLink>
           <ThemeToggle />

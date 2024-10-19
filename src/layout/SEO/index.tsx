@@ -11,7 +11,7 @@ interface SEOProps {
 const SEO: FC<SEOProps> = ({
   description,
   title,
-  siteTitle = 'Pokécardmaker.net',
+  siteTitle = 'DreamBees.art',
   fullTitle,
 }) => {
   const finalTitle = useMemo<string>(
@@ -29,14 +29,14 @@ const SEO: FC<SEOProps> = ({
       <meta property="og:site_name" content={siteTitle} />
       <meta
         property="og:image"
-        content="https://pokecardmaker.net/assets/images/metaImage.png"
+        content="https:/DreamBees.art/assets/images/metaImage.png"
       />
       <meta property="twitter:card" content="summary" />
       <meta property="twitter:title" content={finalTitle} />
       <meta property="twitter:description" content={description} />
       <meta
         property="twitter:image"
-        content="https://pokecardmaker.net/assets/images/metaImage.png"
+        content="https://DreamBees.art/assets/images/metaImage.png"
       />
     </Head>
   );

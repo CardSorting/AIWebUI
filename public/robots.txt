@@ -3,7 +3,7 @@ User-agent: *
 Allow: /
 
 # Host
-Host: https://pokecardmaker.net
+Host: https://dreambees.art
 
 # Sitemaps
-Sitemap: https://pokecardmaker.net/sitemap.xml
+Sitemap: https://dreambees.art/sitemap.xml

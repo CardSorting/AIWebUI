@@ -1,0 +1,62 @@
+[
+  {
+    "type": "Fire",
+    "prompt": "Create a fiery dragon soaring through the night sky with glowing scales."
+  },
+  {
+    "type": "Water",
+    "prompt": "Craft a serene underwater scene with vibrant coral reefs and diverse marine life."
+  },
+  {
+    "type": "Grass",
+    "prompt": "Design a mystical forest inhabited by enchanting creatures and luminescent plants."
+  },
+  {
+    "type": "Electric",
+    "prompt": "Illustrate a futuristic cityscape with towering skyscrapers and flying electric vehicles."
+  },
+  {
+    "type": "Psychic",
+    "prompt": "Depict a psychic Pokémon using its powers in a vibrant energy field."
+  },
+  {
+    "type": "Ice",
+    "prompt": "Create a majestic ice dragon gliding over frozen mountains under the aurora borealis."
+  },
+  {
+    "type": "Dark",
+    "prompt": "Illustrate a dark and mysterious alleyway haunted by shadowy Pokémon."
+  },
+  {
+    "type": "Fairy",
+    "prompt": "Design a whimsical fairy Pokémon dancing amidst sparkling flowers in a magical meadow."
+  },
+  {
+    "type": "Fighting",
+    "prompt": "Depict a strong fighting Pokémon engaged in a dynamic battle pose."
+  },
+  {
+    "type": "Ground",
+    "prompt": "Craft an earthy ground Pokémon emerging from the fertile soil of a lush valley."
+  },
+  {
+    "type": "Rock",
+    "prompt": "Illustrate a rugged rock Pokémon standing steadfastly on a cliffside."
+  },
+  {
+    "type": "Bug",
+    "prompt": "Design an intricate bug Pokémon navigating through a dense forest of oversized flora."
+  },
+  {
+    "type": "Ghost",
+    "prompt": "Depict a spectral ghost Pokémon floating gracefully in a haunted mansion."
+  },
+  {
+    "type": "Dragon",
+    "prompt": "Create a legendary dragon Pokémon breathing fire amidst stormy clouds."
+  },
+  {
+    "type": "Normal",
+    "prompt": "Illustrate a cheerful normal Pokémon enjoying a sunny day in the park."
+  }
+]

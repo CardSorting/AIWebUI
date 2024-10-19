@@ -13,19 +13,32 @@ import {
   Snackbar, 
   Grid, 
   Card, 
-  CardMedia, 
   CardContent, 
-  CardActions 
+  CardActions, 
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  IconButton,
+  Tooltip
 } from '@mui/material';
-import NextLink from 'next/link';
-import Routes from '@routes';
+import Image from 'next/image';
 import { useAIImageGeneration } from '@components/AIImageGenerator/useAIImageGeneration';
+import CloseIcon from '@mui/icons-material/Close';
 
 interface ImageGenerationOptions {
   imageSize: string;
   quantity: number;
   style?: string;
   colorPalette?: string;
+}
+
+interface ImageMetadata {
+  id: string;
+  prompt: string;
+  imageUrl: string;
+  fullResult: any;
+  createdAt: string;
 }
 
 const AIImageGeneratorPage: React.FC = () => {
@@ -35,13 +48,13 @@ const AIImageGeneratorPage: React.FC = () => {
     error: apiError,
     resetError,
     generatedImages,
-    isLoadingImages,
-    fetchGeneratedImages,
+    clearImages, // Function to clear images
     cancelOngoingRequests
   } = useAIImageGeneration();
 
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [localError, setLocalError] = useState<string | null>(null);
+  const [selectedImage, setSelectedImage] = useState<ImageMetadata | null>(null); // For Modal
 
   useEffect(() => {
     console.log('[AIImageGeneratorPage] Component mounted.');
@@ -95,6 +108,43 @@ const AIImageGeneratorPage: React.FC = () => {
     setLocalError(null);
   }, []);
 
+  /**
+   * Utility function to download image as a blob.
+   * @param imageUrl The URL of the image to download.
+   * @param imageId The unique identifier of the image.
+   */
+  const downloadImage = async (imageUrl: string, imageId: string) => {
+    try {
+      const response = await fetch(imageUrl, { mode: 'cors' });
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `pokemon-card-${imageId}.jpg`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+      setSuccessMessage('Image downloaded successfully!');
+    } catch (error) {
+      console.error('Error downloading the image:', error);
+      setLocalError('Failed to download the image.');
+    }
+  };
+
+  /**
+   * Handles clearing all generated images.
+   */
+  const handleClearImages = useCallback(() => {
+    if (confirm('Are you sure you want to clear all generated images?')) {
+      clearImages();
+      setSuccessMessage('All images have been cleared.');
+    }
+  }, [clearImages]);
+
   return (
     <>
       <SEO title="AI Image Generator" description="Generate Pokémon card images using AI" />
@@ -141,125 +191,147 @@ const AIImageGeneratorPage: React.FC = () => {
           <Typography variant="h5" gutterBottom>
             Generated Images:
           </Typography>
-          <Grid container spacing={4}>
-            {generatedImages.length > 0 ? (
-              generatedImages.map((image) => (
-                <Grid item xs={12} sm={6} md={4} key={image.id}>
-                  <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-                    <CardMedia
-                      component="img"
-                      height="200"
-                      image={image.imageUrl}
-                      alt="Generated Pokémon"
-                      onError={() => {
-                        console.error(`[AIImageGeneratorPage] Error loading image with ID ${image.id}.`);
-                        setLocalError('Failed to load one or more images.');
-                      }}
-                    />
-                    <CardContent sx={{ flexGrow: 1 }}>
-                      <Typography variant="body1" gutterBottom>
-                        {image.prompt}
-                      </Typography>
-                    </CardContent>
-                    <CardActions>
-                      <Button 
-                        size="small" 
-                        color="primary" 
-                        href={image.imageUrl} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
+          {generatedImages.length > 0 ? (
+            <>
+              <Grid container spacing={4}>
+                {generatedImages.map((image) => (
+                  <Grid item xs={12} sm={6} md={4} key={image.id}>
+                    <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+                      {/* Optimized Image Component with Click to Open Modal */}
+                      <Box 
+                        sx={{ position: 'relative', width: '100%', height: 0, paddingBottom: '75%', cursor: 'pointer' }} 
+                        onClick={() => setSelectedImage(image)}
                       >
-                        View Image
-                      </Button>
-                      <Button 
-                        size="small" 
-                        color="secondary" 
-                        onClick={() => {
-                          if (image.imageUrl) {
-                            navigator.clipboard.writeText(image.imageUrl);
-                            setSuccessMessage('Image URL copied to clipboard!');
-                          }
-                        }}
-                      >
-                        Copy URL
-                      </Button>
-                      <Button 
-                        size="small" 
-                        color="success" 
-                        onClick={() => {
-                          if (image.imageUrl) {
-                            // Trigger download
-                            const link = document.createElement('a');
-                            link.href = image.imageUrl;
-                            link.download = `pokemon-card-${image.id}.jpg`;
-                            document.body.appendChild(link);
-                            link.click();
-                            document.body.removeChild(link);
-                            setSuccessMessage('Image downloaded successfully!');
-                          }
-                        }}
-                      >
-                        Download
-                      </Button>
-                      {/* Share Button (e.g., Twitter) */}
-                      <Button 
-                        size="small" 
-                        color="info" 
-                        onClick={() => {
-                          if (image.imageUrl) {
-                            const tweetText = encodeURIComponent(`Check out this Pokémon card I generated: ${image.imageUrl}`);
-                            window.open(`https://twitter.com/intent/tweet?text=${tweetText}`, '_blank');
-                          }
-                        }}
-                      >
-                        Share
-                      </Button>
-                    </CardActions>
-                  </Card>
-                </Grid>
-              ))
-            ) : (
-              <Grid item xs={12}>
-                <Typography variant="body1" align="center">
-                  No images generated yet.
-                </Typography>
+                        <Image
+                          src={image.imageUrl}
+                          alt={`Generated Pokémon for prompt: ${image.prompt}`}
+                          layout="fill"
+                          objectFit="cover"
+                          onError={() => {
+                            console.error(`[AIImageGeneratorPage] Error loading image with ID ${image.id}.`);
+                            setLocalError('Failed to load one or more images.');
+                          }}
+                        />
+                      </Box>
+                      <CardContent sx={{ flexGrow: 1 }}>
+                        <Typography variant="body1" gutterBottom>
+                          {image.prompt}
+                        </Typography>
+                      </CardContent>
+                      <CardActions>
+                        <Tooltip title="View Image">
+                          <IconButton 
+                            size="small" 
+                            color="primary" 
+                            onClick={() => setSelectedImage(image)}
+                            aria-label={`View image for prompt: ${image.prompt}`}
+                          >
+                            {/* Eye Icon SVG */}
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" style={{ width: '24px', height: '24px' }}>
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M2.036 12.322a1.012 1.012 0 010-1.002C3.432 7.271 7.523 4 12 4c4.477 0 8.568 3.271 10.964 7.32a1.012 1.012 0 010 1.002C20.568 16.729 16.477 20 12 20c-4.477 0-8.568-3.271-10.964-7.678z" />
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            </svg>
+                          </IconButton>
+                        </Tooltip>
+                        <Button 
+                          size="small" 
+                          color="secondary" 
+                          onClick={() => {
+                            if (image.imageUrl) {
+                              navigator.clipboard.writeText(image.imageUrl);
+                              setSuccessMessage('Image URL copied to clipboard!');
+                            }
+                          }}
+                          aria-label="Copy image URL to clipboard"
+                        >
+                          Copy URL
+                        </Button>
+                        <Button 
+                          size="small" 
+                          color="success" 
+                          onClick={() => {
+                            if (image.imageUrl) {
+                              downloadImage(image.imageUrl, image.id);
+                            }
+                          }}
+                          aria-label="Download image"
+                        >
+                          Download
+                        </Button>
+                      </CardActions>
+                    </Card>
+                  </Grid>
+                ))}
               </Grid>
-            )}
-          </Grid>
 
-          {/* Loading Indicator for Gallery */}
-          {isLoadingImages && (
-            <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
-              <CircularProgress />
-            </Box>
+              {/* Clear All Images Button */}
+              <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
+                <Button
+                  variant="outlined"
+                  color="error"
+                  onClick={handleClearImages}
+                  aria-label="Clear all generated images"
+                >
+                  Clear All Images
+                </Button>
+              </Box>
+            </>
+          ) : (
+            <Typography variant="body1" align="center">
+              No images generated yet.
+            </Typography>
           )}
-
-          {/* Button to Fetch More Images */}
-          <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
-            <Button
-              variant="outlined"
-              onClick={fetchGeneratedImages}
-              disabled={isLoadingImages}
-              sx={{ px: 4 }}
-            >
-              {isLoadingImages ? <CircularProgress size={24} /> : 'Load More Images'}
-            </Button>
-          </Box>
         </Box>
 
-        {/* View Gallery Button */}
-        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
-          <NextLink href={Routes.Gallery} passHref>
-            <Button
-              variant="contained"
-              color="secondary"
-              onClick={() => console.log('[AIImageGeneratorPage] Navigating to Gallery.')}
-              data-testid="view-gallery-button"
+        {/* Image Modal */}
+        <Dialog
+          open={Boolean(selectedImage)}
+          onClose={() => setSelectedImage(null)}
+          fullWidth
+          maxWidth="lg"
+          aria-labelledby="image-dialog-title"
+        >
+          <DialogTitle id="image-dialog-title" sx={{ m: 0, p: 2 }}>
+            {selectedImage?.prompt}
+            <IconButton
+              aria-label="close"
+              onClick={() => setSelectedImage(null)}
+              sx={{
+                position: 'absolute',
+                right: 8,
+                top: 8,
+                color: (theme) => theme.palette.grey[500],
+              }}
             >
-              View Generated Images Gallery
+              <CloseIcon />
+            </IconButton>
+          </DialogTitle>
+          <DialogContent dividers>
+            {selectedImage ? (
+              <Box
+                component="img"
+                src={selectedImage.imageUrl}
+                alt={`Generated Pokémon for prompt: ${selectedImage.prompt}`}
+                sx={{
+                  width: '100%',
+                  height: 'auto',
+                  borderRadius: 1,
+                }}
+                onError={() => {
+                  console.error(`[AIImageGeneratorPage] Error loading image with ID ${selectedImage.id}.`);
+                  setLocalError('Failed to load the selected image.');
+                }}
+              />
+            ) : (
+              <CircularProgress />
+            )}
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setSelectedImage(null)} color="primary" aria-label="Close Image Modal">
+              Close
             </Button>
-          </NextLink>
-        </Box>
+          </DialogActions>
+        </Dialog>
       </Box>
     </>
   );

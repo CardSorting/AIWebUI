@@ -28,12 +28,12 @@ const ShareButton: FC<ShareButtonProps> = ({ cardId, ...props }) => {
       });
 
       const shareData: ShareData = {
-        title: 'Pokécardmaker.net',
+        title: 'DreamBees.art',
         files: [file],
         text: `Check out this custom ${
           name ? `'${name}'` : 'Pokémon'
         } card that I made!`,
-        url: 'https://pokecardmaker.net',
+        url: 'https://dreambees.art',
       };
       if (!navigator.share) return;
       if (!!navigator.canShare && !navigator.canShare(shareData)) return;

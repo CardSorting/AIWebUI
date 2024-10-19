@@ -1,6 +1,7 @@
 // src/components/AIImageGenerator/useAIImageGeneration.ts
 
 import { useState, useCallback, useRef, useEffect } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 
 interface ErrorResponse {
   error: string;
@@ -11,11 +12,11 @@ interface ErrorResponse {
 interface GenerateImageResponse {
   imageUrl: string | null;
   fullResult: any;
-  queueUpdates?: any[];
+  queueUpdates: any[];
 }
 
 interface ImageMetadata {
-  id: number;
+  id: string;
   prompt: string;
   imageUrl: string;
   fullResult: any;
@@ -26,10 +27,26 @@ const MAX_RETRIES = 3;
 const RETRY_DELAY = 1000; // 1 second
 
 export const useAIImageGeneration = () => {
+  // Lazy initializer to load images from localStorage on client-side
+  const [generatedImages, setGeneratedImages] = useState<ImageMetadata[]>(() => {
+    if (typeof window !== 'undefined') {
+      const storedImages = localStorage.getItem('generatedImages');
+      if (storedImages) {
+        try {
+          const parsedImages: ImageMetadata[] = JSON.parse(storedImages);
+          console.log('[useAIImageGeneration] Loaded generated images from localStorage:', parsedImages);
+          return parsedImages;
+        } catch (error) {
+          console.error('[useAIImageGeneration] Failed to parse generated images from localStorage:', error);
+          localStorage.removeItem('generatedImages'); // Optionally clear corrupted data
+        }
+      }
+    }
+    return [];
+  });
+
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [generatedImages, setGeneratedImages] = useState<ImageMetadata[]>([]);
-  const [isLoadingImages, setIsLoadingImages] = useState(false);
   const abortControllerRef = useRef<AbortController | null>(null);
 
   /**
@@ -108,13 +125,17 @@ export const useAIImageGeneration = () => {
 
       if (imageUrl) {
         const newImage: ImageMetadata = {
-          id: Date.now(),
+          id: uuidv4(),
           prompt,
           imageUrl,
           fullResult,
           createdAt: new Date().toISOString(),
         };
-        setGeneratedImages((prevImages) => [newImage, ...prevImages]);
+        setGeneratedImages((prevImages) => {
+          const updatedImages = [newImage, ...prevImages];
+          console.log('[useAIImageGeneration] Updated generatedImages state:', updatedImages);
+          return updatedImages;
+        });
       } else {
         console.warn('[useAIImageGeneration] No imageUrl found in the API response.');
         setError('Image generation failed. No image URL was returned.');
@@ -145,52 +166,6 @@ export const useAIImageGeneration = () => {
   }, [fetchWithRetry]);
 
   /**
-   * Fetches all previously generated images.
-   */
-  const fetchGeneratedImages = useCallback(async () => {
-    console.log('[useAIImageGeneration] Initiating fetch for generated images.');
-    setIsLoadingImages(true);
-    setError(null);
-
-    // Create a new AbortController for this request
-    abortControllerRef.current = new AbortController();
-
-    try {
-      console.log('[useAIImageGeneration] Sending GET request to /api/get-generated-images');
-      const response = await fetchWithRetry('/api/get-generated-images', {
-        signal: abortControllerRef.current.signal,
-      });
-
-      console.log('[useAIImageGeneration] Received response from /api/get-generated-images');
-      console.log('[useAIImageGeneration] Response status:', response.status);
-      console.log('[useAIImageGeneration] Response successful:', response.ok);
-
-      const data: ImageMetadata[] = await response.json();
-      console.log('[useAIImageGeneration] Generated images data retrieved successfully:', data);
-      setGeneratedImages(data);
-    } catch (err) {
-      console.error('[useAIImageGeneration] Exception caught while fetching generated images:', err);
-
-      let errorMessage = 'An error occurred while fetching generated images.';
-      if (err instanceof Error) {
-        errorMessage = err.message;
-        console.error('[useAIImageGeneration] Error message:', errorMessage);
-        console.error('[useAIImageGeneration] Error stack trace:', err.stack);
-      } else if (typeof err === 'object' && err !== null) {
-        const errorResponse = err as ErrorResponse;
-        errorMessage = errorResponse.message || errorResponse.error || 'An unknown error occurred';
-        console.error('[useAIImageGeneration] Error object received:', errorResponse);
-      }
-
-      setError(errorMessage);
-    } finally {
-      console.log('[useAIImageGeneration] Fetch generated images process completed.');
-      setIsLoadingImages(false);
-      abortControllerRef.current = null;
-    }
-  }, [fetchWithRetry]);
-
-  /**
    * Cancels any ongoing fetch requests.
    */
   const cancelOngoingRequests = useCallback(() => {
@@ -202,21 +177,33 @@ export const useAIImageGeneration = () => {
   }, []);
 
   /**
-   * Load generated images from localStorage on mount.
-   */
-  useEffect(() => {
-    const storedImages = localStorage.getItem('generatedImages');
-    if (storedImages) {
-      setGeneratedImages(JSON.parse(storedImages));
-    }
-  }, []);
-
-  /**
    * Save generated images to localStorage whenever they change.
    */
   useEffect(() => {
-    localStorage.setItem('generatedImages', JSON.stringify(generatedImages));
+    console.log('[useAIImageGeneration] Saving generated images to localStorage.');
+    if (typeof window !== 'undefined') { // Ensure it's client-side
+      try {
+        const json = JSON.stringify(generatedImages);
+        console.log('[useAIImageGeneration] JSON to save:', json);
+        localStorage.setItem('generatedImages', json);
+        console.log('[useAIImageGeneration] Saved generated images to localStorage.');
+      } catch (storageError) {
+        console.error('[useAIImageGeneration] Failed to save generated images to localStorage:', storageError);
+        setError('Failed to save images for persistence.');
+      }
+    }
   }, [generatedImages]);
+
+  /**
+   * Clears all generated images from state and localStorage.
+   */
+  const clearImages = useCallback(() => {
+    setGeneratedImages([]);
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('generatedImages');
+    }
+    console.log('[useAIImageGeneration] Cleared all generated images.');
+  }, []);
 
   return { 
     generateImage, 
@@ -224,8 +211,7 @@ export const useAIImageGeneration = () => {
     error, 
     resetError, 
     generatedImages,
-    isLoadingImages,
-    fetchGeneratedImages,
+    clearImages, // Exposed to allow clearing images from the component
     cancelOngoingRequests
   };
-};git
+};

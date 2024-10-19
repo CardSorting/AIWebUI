@@ -1,5 +1,3 @@
-// src/components/AIImageGenerator.tsx
-
 import React, { useState, useEffect } from 'react';
 import { 
   Button, 
@@ -11,63 +9,33 @@ import {
   Alert, 
   Tooltip, 
   IconButton, 
-  MenuItem, 
-  Select, 
-  InputLabel, 
-  FormControl, 
   List, 
   ListItem, 
   ListItemText,
-  ListItemSecondaryAction
+  ListItemSecondaryAction,
+  Grid
 } from '@mui/material';
 import { useAIImageGeneration } from './useAIImageGeneration';
 import ClearIcon from '@mui/icons-material/Clear';
 import StarIcon from '@mui/icons-material/Star';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
+import AddIcon from '@mui/icons-material/Add';
+import ExamplePrompts from './ExamplePrompts'; // Import the refactored component
 
 interface AIImageGeneratorProps {
-  onSubmit: (prompt: string, options?: ImageGenerationOptions) => Promise<void>;
+  onSubmit: (prompt: string) => Promise<void>;
 }
-
-interface ImageGenerationOptions {
-  imageSize: string;
-  quantity: number;
-}
-
-const examplePrompts = [
-  "Create a fiery dragon soaring through the night sky with glowing scales.",
-  "Design a mystical forest inhabited by enchanting creatures and luminescent plants.",
-  "Illustrate a futuristic cityscape with towering skyscrapers and flying vehicles.",
-];
 
 const AIImageGenerator: React.FC<AIImageGeneratorProps> = ({ onSubmit }) => {
   const [prompt, setPrompt] = useState('');
   const [characterCount, setCharacterCount] = useState(0);
-  const [selectedExample, setSelectedExample] = useState<string>('');
   const [favorites, setFavorites] = useState<string[]>([]);
   const [isFavorite, setIsFavorite] = useState<boolean>(false);
 
-  // Image size options
-  const imageSizeOptions = [
-    { label: 'Landscape (4:3)', value: 'landscape_4_3' },
-    { label: 'Square (1:1)', value: 'square' },
-    { label: 'Portrait (3:4)', value: 'portrait_3_4' },
-  ];
-
-  // Quantity options
-  const quantityOptions = [1, 2, 3, 4, 5];
-
-  // Default options
-  const [imageSize, setImageSize] = useState<string>('landscape_4_3');
-  const [quantity, setQuantity] = useState<number>(1);
-
   // Destructure necessary states and functions from the hook
-  const { 
-    isGenerating, 
-    error, 
-  } = useAIImageGeneration();
+  const { isGenerating, error } = useAIImageGeneration();
 
-  // Update character count whenever prompt changes
+  // Update character count and favorite status whenever prompt changes
   useEffect(() => {
     setCharacterCount(prompt.length);
     setIsFavorite(favorites.includes(prompt));
@@ -93,21 +61,17 @@ const AIImageGenerator: React.FC<AIImageGeneratorProps> = ({ onSubmit }) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (prompt.trim()) {
-      const options: ImageGenerationOptions = { imageSize, quantity };
-      await onSubmit(prompt, options); // Trigger image generation via the provided onSubmit prop
+      await onSubmit(prompt); // Trigger image generation via the provided onSubmit prop
       setPrompt(''); // Clear the input field after submission
-      setSelectedExample('');
     }
   };
 
   /**
-   * Handles selecting an example prompt.
-   * @param e Change event
+   * Handles selecting an example prompt from the ExamplePrompts component.
+   * @param selectedPrompt The selected example prompt
    */
-  const handleSelectExample = (e: React.ChangeEvent<{ value: unknown }>) => {
-    const selected = e.target.value as string;
-    setSelectedExample(selected);
-    setPrompt(selected);
+  const handleSelectExample = (selectedPrompt: string) => {
+    setPrompt(selectedPrompt);
   };
 
   /**
@@ -115,7 +79,6 @@ const AIImageGenerator: React.FC<AIImageGeneratorProps> = ({ onSubmit }) => {
    */
   const handleClearPrompt = () => {
     setPrompt('');
-    setSelectedExample('');
   };
 
   /**
@@ -137,7 +100,6 @@ const AIImageGenerator: React.FC<AIImageGeneratorProps> = ({ onSubmit }) => {
    */
   const handleSelectFavorite = (favorite: string) => {
     setPrompt(favorite);
-    setSelectedExample('');
   };
 
   return (
@@ -149,133 +111,92 @@ const AIImageGenerator: React.FC<AIImageGeneratorProps> = ({ onSubmit }) => {
             Generate Your Pokémon Card Image
           </Typography>
 
-          {/* Example Prompts Dropdown */}
-          <FormControl fullWidth variant="outlined" sx={{ mb: 2 }}>
-            <InputLabel id="example-prompts-label">Select an Example Prompt</InputLabel>
-            <Select
-              labelId="example-prompts-label"
-              id="example-prompts"
-              value={selectedExample}
-              onChange={handleSelectExample}
-              label="Select an Example Prompt"
-            >
-              <MenuItem value="">
-                <em>None</em>
-              </MenuItem>
-              {examplePrompts.map((example, index) => (
-                <MenuItem key={index} value={example}>
-                  {example}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
+          <Grid container spacing={2}>
+            {/* Example Prompts with Pokémon Type Icons */}
+            <Grid item xs={12}>
+              <ExamplePrompts onSelectExample={handleSelectExample} />
+            </Grid>
 
-          {/* Prompt Text Field with Clear and Favorite Buttons */}
-          <Box display="flex" alignItems="flex-end">
-            <TextField
-              fullWidth
-              label="Describe your Pokémon card image"
-              value={prompt}
-              onChange={(e) => setPrompt(e.target.value)}
-              margin="normal"
-              multiline
-              rows={4}
-              disabled={isGenerating}
-              variant="outlined"
-              inputProps={{ 'aria-label': 'Pokémon card image description' }}
-            />
-            <Box>
-              {prompt && (
-                <Tooltip title="Clear Prompt">
-                  <IconButton 
-                    aria-label="clear prompt" 
-                    onClick={handleClearPrompt} 
-                    disabled={isGenerating}
-                    sx={{ mt: 2 }}
-                  >
-                    <ClearIcon />
-                  </IconButton>
-                </Tooltip>
+            {/* Prompt Text Field with Clear and Favorite Buttons */}
+            <Grid item xs={12}>
+              <Box display="flex" alignItems="flex-end">
+                <TextField
+                  fullWidth
+                  label="Describe your Pokémon card image"
+                  value={prompt}
+                  onChange={(e) => setPrompt(e.target.value)}
+                  margin="normal"
+                  multiline
+                  rows={4}
+                  disabled={isGenerating}
+                  variant="outlined"
+                  inputProps={{ 'aria-label': 'Pokémon card image description' }}
+                />
+                <Box display="flex" flexDirection="column" ml={1}>
+                  {prompt && (
+                    <Tooltip title="Clear Prompt">
+                      <span> {/* Wrapper element to address MUI Tooltip warning */}
+                        <IconButton 
+                          aria-label="clear prompt" 
+                          onClick={handleClearPrompt} 
+                          disabled={isGenerating}
+                          sx={{ mt: 2 }}
+                        >
+                          <ClearIcon />
+                        </IconButton>
+                      </span>
+                    </Tooltip>
+                  )}
+                  <Tooltip title={isFavorite ? "Remove from Favorites" : "Add to Favorites"}>
+                    <span> {/* Wrapper element to address MUI Tooltip warning */}
+                      <IconButton 
+                        aria-label="toggle favorite" 
+                        onClick={toggleFavorite} 
+                        disabled={isGenerating || !prompt.trim()}
+                        sx={{ mt: 1 }}
+                      >
+                        {isFavorite ? <StarIcon color="warning" /> : <StarBorderIcon />}
+                      </IconButton>
+                    </span>
+                  </Tooltip>
+                </Box>
+              </Box>
+
+              {/* Character Count */}
+              <Typography variant="caption" color={characterCount > 300 ? 'error' : 'textSecondary'}>
+                {characterCount}/300 characters
+              </Typography>
+
+              {/* Error Alert */}
+              {error && (
+                <Alert severity="error" sx={{ mt: 2 }}>
+                  {error}
+                </Alert>
               )}
-              <Tooltip title={isFavorite ? "Remove from Favorites" : "Add to Favorites"}>
-                <IconButton 
-                  aria-label="toggle favorite" 
-                  onClick={toggleFavorite} 
-                  disabled={isGenerating || !prompt.trim()}
-                  sx={{ mt: 2 }}
-                >
-                  {isFavorite ? <StarIcon color="warning" /> : <StarBorderIcon />}
-                </IconButton>
-              </Tooltip>
-            </Box>
-          </Box>
+            </Grid>
 
-          {/* Character Count */}
-          <Typography variant="caption" color={characterCount > 300 ? 'error' : 'textSecondary'}>
-            {characterCount}/300 characters
-          </Typography>
-
-          {/* Error Alert */}
-          {error && (
-            <Alert severity="error" sx={{ mt: 2 }}>
-              {error}
-            </Alert>
-          )}
-
-          {/* Image Size Selection */}
-          <FormControl fullWidth variant="outlined" sx={{ mt: 2, mb: 2 }}>
-            <InputLabel id="image-size-label">Image Size</InputLabel>
-            <Select
-              labelId="image-size-label"
-              id="image-size-select"
-              value={imageSize}
-              onChange={(e) => setImageSize(e.target.value as string)}
-              label="Image Size"
-            >
-              {imageSizeOptions.map((size) => (
-                <MenuItem key={size.value} value={size.value}>
-                  {size.label}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-
-          {/* Quantity Selection */}
-          <FormControl fullWidth variant="outlined" sx={{ mb: 2 }}>
-            <InputLabel id="quantity-label">Number of Images</InputLabel>
-            <Select
-              labelId="quantity-label"
-              id="quantity-select"
-              value={quantity}
-              onChange={(e) => setQuantity(e.target.value as number)}
-              label="Number of Images"
-            >
-              {quantityOptions.map((num) => (
-                <MenuItem key={num} value={num}>
-                  {num}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-
-          {/* Submit Button */}
-          <Button
-            type="submit"
-            variant="contained"
-            color="primary"
-            disabled={isGenerating || prompt.trim().length === 0 || characterCount > 300}
-            sx={{ mt: 2 }}
-            aria-label="Generate Image"
-          >
-            {isGenerating ? <CircularProgress size={24} /> : 'Generate Image'}
-          </Button>
+            {/* Submit Button */}
+            <Grid item xs={12}>
+              <Button
+                type="submit"
+                variant="contained"
+                color="primary"
+                disabled={isGenerating || prompt.trim().length === 0 || characterCount > 300}
+                sx={{ mt: 2 }}
+                startIcon={isGenerating ? <CircularProgress size={20} /> : <AddIcon />}
+                aria-label="Generate Image"
+              >
+                {isGenerating ? 'Generating...' : 'Generate Image'}
+              </Button>
+            </Grid>
+          </Grid>
         </Box>
       </Paper>
 
       {/* Instructions or Tips */}
       <Box sx={{ mb: 2 }}>
         <Typography variant="body2" color="textSecondary">
-          Tip: Be as descriptive as possible to get the best results. For example, include colors, emotions, and specific details.
+          <strong>Tip:</strong> Be as descriptive as possible to get the best results. Include colors, emotions, and specific details.
         </Typography>
       </Box>
 
@@ -292,13 +213,19 @@ const AIImageGenerator: React.FC<AIImageGeneratorProps> = ({ onSubmit }) => {
                 key={index} 
                 onClick={() => handleSelectFavorite(fav)}
                 disabled={isGenerating}
+                secondaryAction={
+                  <Tooltip title="Remove from Favorites">
+                    <span> {/* Wrapper element to address MUI Tooltip warning */}
+                      <IconButton edge="end" aria-label="remove favorite" onClick={() => {
+                        setFavorites(favorites.filter(favItem => favItem !== fav));
+                      }}>
+                        <ClearIcon />
+                      </IconButton>
+                    </span>
+                  </Tooltip>
+                }
               >
                 <ListItemText primary={fav} />
-                <ListItemSecondaryAction>
-                  <IconButton edge="end" aria-label="remove favorite" onClick={() => toggleFavorite()}>
-                    <ClearIcon />
-                  </IconButton>
-                </ListItemSecondaryAction>
               </ListItem>
             ))}
           </List>
