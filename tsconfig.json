@@ -17,7 +17,8 @@
       "@routes": ["src/routes"],
       "@interfaces/*": ["src/interfaces/*"],
       "@layout": ["src/layout"],
-      "@assets/*": ["public/assets/*"]
+      "@assets/*": ["public/assets/*"],
+      "@/*": ["src/*"]  // Add this line
     },
     "allowJs": true,
     "skipLibCheck": true,

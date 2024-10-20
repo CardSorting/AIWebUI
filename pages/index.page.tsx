@@ -50,7 +50,7 @@ const Home: FC = () => {
   return (
     <>
       <SEO
-        fullTitle="DreamBees.art | Create AI-powered custom Pokémon cards"
+        fullTitle="PlayMoreTCG | Create AI-powered custom Pokémon cards"
         description={`${siteDescription} with AI-generated artwork`}
       />
       <Container maxWidth="lg">

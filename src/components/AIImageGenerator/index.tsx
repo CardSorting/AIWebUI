@@ -20,7 +20,7 @@ import ClearIcon from '@mui/icons-material/Clear';
 import StarIcon from '@mui/icons-material/Star';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
 import AddIcon from '@mui/icons-material/Add';
-import ExamplePrompts from './ExamplePrompts'; // Import the refactored component
+import ExamplePrompts from './ExamplePrompts';
 
 interface AIImageGeneratorProps {
   onSubmit: (prompt: string) => Promise<void>;
@@ -32,16 +32,14 @@ const AIImageGenerator: React.FC<AIImageGeneratorProps> = ({ onSubmit }) => {
   const [favorites, setFavorites] = useState<string[]>([]);
   const [isFavorite, setIsFavorite] = useState<boolean>(false);
 
-  // Destructure necessary states and functions from the hook
-  const { isGenerating, error } = useAIImageGeneration();
+  // Use the updated hook
+  const { generateImage, isGenerating, error, generatedImages } = useAIImageGeneration();
 
-  // Update character count and favorite status whenever prompt changes
   useEffect(() => {
     setCharacterCount(prompt.length);
     setIsFavorite(favorites.includes(prompt));
   }, [prompt, favorites]);
 
-  // Initialize favorites from localStorage
   useEffect(() => {
     const storedFavorites = localStorage.getItem('favoritePrompts');
     if (storedFavorites) {
@@ -49,41 +47,29 @@ const AIImageGenerator: React.FC<AIImageGeneratorProps> = ({ onSubmit }) => {
     }
   }, []);
 
-  // Update localStorage whenever favorites change
   useEffect(() => {
     localStorage.setItem('favoritePrompts', JSON.stringify(favorites));
   }, [favorites]);
 
-  /**
-   * Handles form submission for generating an image.
-   * @param e Form event
-   */
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (prompt.trim()) {
-      await onSubmit(prompt); // Trigger image generation via the provided onSubmit prop
-      setPrompt(''); // Clear the input field after submission
+      const result = await generateImage(prompt);
+      if (result) {
+        await onSubmit(prompt); // You might want to pass the result to onSubmit as well
+      }
+      setPrompt('');
     }
   };
 
-  /**
-   * Handles selecting an example prompt from the ExamplePrompts component.
-   * @param selectedPrompt The selected example prompt
-   */
   const handleSelectExample = (selectedPrompt: string) => {
     setPrompt(selectedPrompt);
   };
 
-  /**
-   * Handles clearing the prompt input.
-   */
   const handleClearPrompt = () => {
     setPrompt('');
   };
 
-  /**
-   * Handles saving or removing a favorite prompt.
-   */
   const toggleFavorite = () => {
     if (isFavorite) {
       setFavorites(favorites.filter(fav => fav !== prompt));
@@ -94,10 +80,6 @@ const AIImageGenerator: React.FC<AIImageGeneratorProps> = ({ onSubmit }) => {
     }
   };
 
-  /**
-   * Handles selecting a favorite prompt.
-   * @param favorite The selected favorite prompt
-   */
   const handleSelectFavorite = (favorite: string) => {
     setPrompt(favorite);
   };
@@ -135,7 +117,7 @@ const AIImageGenerator: React.FC<AIImageGeneratorProps> = ({ onSubmit }) => {
                 <Box display="flex" flexDirection="column" ml={1}>
                   {prompt && (
                     <Tooltip title="Clear Prompt">
-                      <span> {/* Wrapper element to address MUI Tooltip warning */}
+                      <span>
                         <IconButton 
                           aria-label="clear prompt" 
                           onClick={handleClearPrompt} 
@@ -148,7 +130,7 @@ const AIImageGenerator: React.FC<AIImageGeneratorProps> = ({ onSubmit }) => {
                     </Tooltip>
                   )}
                   <Tooltip title={isFavorite ? "Remove from Favorites" : "Add to Favorites"}>
-                    <span> {/* Wrapper element to address MUI Tooltip warning */}
+                    <span>
                       <IconButton 
                         aria-label="toggle favorite" 
                         onClick={toggleFavorite} 
@@ -215,7 +197,7 @@ const AIImageGenerator: React.FC<AIImageGeneratorProps> = ({ onSubmit }) => {
                 disabled={isGenerating}
                 secondaryAction={
                   <Tooltip title="Remove from Favorites">
-                    <span> {/* Wrapper element to address MUI Tooltip warning */}
+                    <span>
                       <IconButton edge="end" aria-label="remove favorite" onClick={() => {
                         setFavorites(favorites.filter(favItem => favItem !== fav));
                       }}>
@@ -229,6 +211,29 @@ const AIImageGenerator: React.FC<AIImageGeneratorProps> = ({ onSubmit }) => {
               </ListItem>
             ))}
           </List>
+        </Box>
+      )}
+
+      {/* Display Generated Images */}
+      {generatedImages.length > 0 && (
+        <Box sx={{ mb: 4 }}>
+          <Typography variant="h6" gutterBottom>
+            Generated Images:
+          </Typography>
+          <Grid container spacing={2}>
+            {generatedImages.map((image, index) => (
+              <Grid item xs={12} sm={6} md={4} key={index}>
+                <img 
+                  src={image.backblazeUrl} 
+                  alt={`Generated image ${index + 1}`} 
+                  style={{ width: '100%', height: 'auto' }} 
+                />
+                <Typography variant="caption" display="block">
+                  Prompt: {image.prompt}
+                </Typography>
+              </Grid>
+            ))}
+          </Grid>
         </Box>
       )}
     </Box>

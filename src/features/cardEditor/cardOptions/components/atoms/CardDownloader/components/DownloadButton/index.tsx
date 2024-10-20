@@ -21,7 +21,7 @@ const DownloadButton: FC<DownloadButtonProps> = ({ cardId, ...props }) => {
 
       const link = document.createElement('a');
       link.href = pngUrl;
-      link.download = `${name || 'Pokécardmaker.net'}.png`;
+      link.download = `${name || 'dreambees.art'}.png`;
       document.body.appendChild(link);
       link.dispatchEvent(
         new MouseEvent('click', {

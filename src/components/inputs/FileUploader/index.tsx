@@ -35,8 +35,12 @@ const FileUploader: FC<FileUploaderProps> = ({
     setSuccessMessage(message);
   }, []);
 
+  const handleChange = useCallback((name: string, url: string, metadata: any) => {
+    onChange(name, url, metadata);
+  }, [onChange]);
+
   const { upload, isLoading, fileName } = useFileUpload({
-    onChange,
+    onChange: handleChange,
     setErrorMessage,
     onSuccess: handleSuccess,
   });

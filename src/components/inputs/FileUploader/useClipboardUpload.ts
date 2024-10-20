@@ -2,28 +2,34 @@
 
 import { useCallback } from 'react';
 
-export const useClipboardUpload = ({ upload, setErrorMessage }) => {
-  const onClipboardUpload = useCallback(async () => {
-    setErrorMessage(undefined);
+interface UseClipboardUploadProps {
+  upload: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  setErrorMessage: (message: string | undefined) => void;
+}
 
-    try {
-      const permission = await navigator.permissions.query({ name: 'clipboard-read' as PermissionName });
-      if (permission.state === 'denied') {
-        throw new Error('Permission to read your clipboard was denied');
+export const useClipboardUpload = ({ upload, setErrorMessage }: UseClipboardUploadProps) => {
+  const onClipboardUpload = useCallback(() => {
+    navigator.clipboard.read().then(data => {
+      for (const item of data) {
+        if (item.types.includes('image/png') || item.types.includes('image/jpeg')) {
+          item.getType('image/png').then(blob => {
+            const file = new File([blob], 'pasted-image.png', { type: 'image/png' });
+            const event = {
+              target: {
+                files: [file],
+              },
+            } as unknown as React.ChangeEvent<HTMLInputElement>;
+            upload(event);
+          }).catch(() => {
+            setErrorMessage('Failed to read the clipboard image.');
+          });
+        } else {
+          setErrorMessage('Clipboard does not contain an image.');
+        }
       }
-
-      const clipboardContents = await navigator.clipboard.read();
-      const imageItem = clipboardContents.find(item => item.types.includes('image/png'));
-      if (!imageItem) {
-        throw new Error('Please copy an image to your clipboard to upload it');
-      }
-
-      const blob = await imageItem.getType('image/png');
-      const file = new File([blob], 'Clipboard.png', { type: 'image/png' });
-      upload({ currentTarget: { files: [file] } } as any);
-    } catch (error) {
-      setErrorMessage(error.message);
-    }
+    }).catch(() => {
+      setErrorMessage('Failed to access the clipboard.');
+    });
   }, [upload, setErrorMessage]);
 
   return { onClipboardUpload };

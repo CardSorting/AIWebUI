@@ -3,12 +3,12 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
 });
 
 module.exports = withBundleAnalyzer({
-  pageExtensions: ['page.tsx', 'api.ts', 'api.js'],
+  pageExtensions: ['tsx', 'ts', 'jsx', 'js', 'page.tsx', 'api.ts', 'api.js'],
   reactStrictMode: true,
   images: {
     domains: [
       'fal.media', // Current image domain
-      // 'example.com', // Add more domains as needed
+      'f005.backblazeb2.com', // Add Backblaze domain
     ],
   },
 });

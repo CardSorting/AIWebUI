@@ -8,19 +8,52 @@ datasource db {
 }
 
 model ImageMetadata {
-  id           String   @id @default(cuid())
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  id               String   @id @default(cuid())
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
 
-  prompt       String
-  seed         Int
-  imageUrl     String
-  width        Int
-  height       Int
-  contentType  String
+  prompt           String
+  seed             Int
+  imageUrl         String
+  backblazeUrl     String   // New field for Backblaze URL
+  width            Int
+  height           Int
+  contentType      String
 
-  hasNsfwConcepts String  // Reverted from Json to String
-  fullResult      String  // Reverted from Json to String
+  hasNsfwConcepts  String  // Stored as String
+  fullResult       String  // Stored as String
+
+  orders           Order[]
 
   @@map("image_metadata")
+}
+
+model Order {
+  id               String   @id @default(cuid())
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  imageMetadata    ImageMetadata @relation(fields: [imageMetadataId], references: [id])
+  imageMetadataId  String
+
+  printOptions     PrintOptions @relation(fields: [printOptionsId], references: [id])
+  printOptionsId   String
+
+  status           String   @default("PENDING") // Using string instead of enum
+  stripeSessionId  String?  // Stripe Checkout session ID
+
+  @@map("orders")
+}
+
+model PrintOptions {
+  id               String   @id @default(cuid())
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  size             String   // Using string instead of enum
+  quantity         Int
+
+  orders           Order[]
+
+  @@map("print_options")
 }

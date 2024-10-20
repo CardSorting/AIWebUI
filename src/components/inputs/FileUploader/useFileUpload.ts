@@ -11,37 +11,42 @@ interface UseFileUploadProps {
 
 export const useFileUpload = ({ onChange, setErrorMessage, onSuccess }: UseFileUploadProps) => {
   const [isLoading, setLoading] = useState(false);
-  const [fileName, setFileName] = useState<string>();
+  const [fileNames, setFileNames] = useState<string[]>([]);
 
-  const upload = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+  const upload = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
     setErrorMessage(undefined);
-    const uploadedFile = e.currentTarget.files?.[0];
-    if (!uploadedFile) return;
+    const uploadedFiles = e.currentTarget.files;
+    if (!uploadedFiles) return;
 
-    if (uploadedFile.size > maxFileSize) {
-      setErrorMessage('Please upload a file smaller than 5 MB');
-      return;
-    }
+    const filesArray = Array.from(uploadedFiles);
 
     setLoading(true);
-    const reader = new FileReader();
-    reader.onload = () => {
-      setLoading(false);
-      if (typeof reader.result === 'string') {
-        onChange(uploadedFile.name, reader.result);
-        setFileName(uploadedFile.name);
-        if (onSuccess) {
-          onSuccess('File uploaded successfully');
-        }
+
+    for (const file of filesArray) {
+      if (file.size > maxFileSize) {
+        setErrorMessage(`Please upload a file smaller than 5 MB: ${file.name}`);
+        continue;
       }
-    };
-    reader.onerror = () => {
-      setLoading(false);
-      setErrorMessage('An error occurred while reading the file. Please try again.');
-    };
-    reader.readAsDataURL(uploadedFile);
+
+      const reader = new FileReader();
+      reader.onload = () => {
+        if (typeof reader.result === 'string') {
+          onChange(file.name, reader.result);
+          setFileNames(prev => [...prev, file.name]);
+          if (onSuccess) {
+            onSuccess(`File uploaded successfully: ${filex.name}`);
+          }
+        }
+      };
+      reader.onerror = () => {
+        setErrorMessage(`An error occurred while reading the file: ${file.name}`);
+      };
+      reader.readAsDataURL(file);
+    }
+
+    setLoading(false);
     e.currentTarget.value = '';
   }, [onChange, setErrorMessage, onSuccess]);
 
-  return { upload, isLoading, fileName };
+  return { upload, isLoading, fileNames };
 };

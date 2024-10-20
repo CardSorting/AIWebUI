@@ -18,7 +18,7 @@ const Footer: FC = () => (
     }}
   >
     <Typography variant="h6" align="center">
-      © {new Date().getFullYear()} DreamBees.art
+      © {new Date().getFullYear()} PlayMoreTCG
     </Typography>
     <Box ml={2.5} mr={1} py={1} display={['none', undefined, 'block']}>
       <FooterDivider />

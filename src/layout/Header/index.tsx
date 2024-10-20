@@ -1,36 +1,69 @@
+import React from 'react';
 import ThemeToggle from '@components/ThemeToggle';
-import { Hidden, Link, Toolbar, Typography } from '@mui/material';
+import { Hidden, Link, Toolbar, Typography, Box, useTheme, AppBar } from '@mui/material';
 import Routes from '@routes';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
-import { FC } from 'react';
 import DesktopHeader from './DesktopHeader';
-import { DefaultAppBar, InvisibleHeading } from './styles';
+import MobileHeader from './MobileHeader';
+import { InvisibleHeading } from './styles';
 
-const Header: FC = () => {
+const Header: React.FC = () => {
   const { pathname } = useRouter();
+  const theme = useTheme();
 
   return (
     <>
       {(pathname === Routes.Home || pathname === Routes.Creator) && (
-        <InvisibleHeading>DreamBees.art</InvisibleHeading>
+        <InvisibleHeading>PlayMoreTCG</InvisibleHeading>
       )}
-      <DefaultAppBar position="relative" color="primary">
-        <Toolbar>
-          <NextLink href={Routes.Home} passHref>
-            <Typography variant="h1" component={Link} color="white">
-              DreamBees.art
-            </Typography>
-          </NextLink>
-          <ThemeToggle />
-          <Hidden smDown>
-            <DesktopHeader />
-          </Hidden>
+      <AppBar 
+        position="sticky" 
+        color="primary" 
+        elevation={0}
+        sx={{
+          borderBottom: `1px solid ${theme.palette.divider}`,
+          backdropFilter: 'blur(20px)',
+          backgroundColor: 'rgba(255, 255, 255, 0.8)', // Adjust for dark mode compatibility
+          transition: theme.transitions.create(['background-color', 'box-shadow', 'color'], {
+            duration: theme.transitions.duration.short,
+          }),
+        }}
+      >
+        <Toolbar sx={{ justifyContent: 'space-between' }}>
+          <Box display="flex" alignItems="center">
+            <NextLink href={Routes.Home} passHref>
+              <Typography 
+                variant="h1" 
+                component={Link} 
+                color="primary"
+                sx={{ 
+                  fontSize: '1.5rem', 
+                  fontWeight: 'bold', 
+                  textDecoration: 'none',
+                  '&:hover': {
+                    color: theme.palette.secondary.main,
+                  },
+                }}
+              >
+                PlayMoreTCG
+              </Typography>
+            </NextLink>
+          </Box>
+
+          <Box display="flex" alignItems="center">
+            <Hidden smDown>
+              <DesktopHeader />
+            </Hidden>
+            <Box ml={2}>
+              <ThemeToggle />
+            </Box>
+            <Hidden mdUp>
+              <MobileHeader />
+            </Hidden>
+          </Box>
         </Toolbar>
-      </DefaultAppBar>
-      {/* <Hidden mdUp>
-      <MobileHeader />
-    </Hidden> */}
+      </AppBar>
     </>
   );
 };

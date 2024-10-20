@@ -23,7 +23,7 @@ const ShareButton: FC<ShareButtonProps> = ({ cardId, ...props }) => {
 
     canvas.toBlob(blob => {
       if (!blob) return;
-      const file = new File([blob], `${name || 'Pokécardmaker.net'}.png`, {
+      const file = new File([blob], `${name || 'dreambees.art'}.png`, {
         type: 'image/png',
       });
 

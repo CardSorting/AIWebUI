@@ -12,7 +12,7 @@ const Routes = {
   Home: '/',
   Creator: '/creator',
   AIImageGenerator: '/ai-image-generator',
-  Gallery: '/gallery',// Add this new route
+  ImageUploadAndOrder: '/image-upload-and-order', // Add this new route for the order page
   PrivacyPolicy: '/privacy-policy',
   CookiePolicy: '/cookie-policy',
   Contact: '/contact',
@@ -25,10 +25,8 @@ const Routes = {
     },
     Discussions: {
       Home: '',
-      Ideas:
-        '',
-      Questions:
-        '',
+      Ideas: '',
+      Questions: '',
     },
   },
   Assets: {
