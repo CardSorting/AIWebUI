@@ -12,10 +12,12 @@ const Routes = {
   Home: '/',
   Creator: '/creator',
   AIImageGenerator: '/ai-image-generator',
-  ImageUploadAndOrder: '/image-upload-and-order', // Add this new route for the order page
+  ImageUploadAndOrder: '/image-upload-and-order',
   PrivacyPolicy: '/privacy-policy',
   CookiePolicy: '/cookie-policy',
   Contact: '/contact',
+  SignIn: '/auth/signin',    // Added SignIn route
+  SignUp: '/auth/signup',    // Added SignUp route
   EMail: '',
   GitHub: {
     Home: '',

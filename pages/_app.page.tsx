@@ -10,6 +10,7 @@ import { useRouter } from 'next/router';
 import { useSettingsStore } from '@features/settings';
 import { getTheme } from '@utils/theme';
 import { Background, MainContainer } from './styles';
+import { UserProvider } from '@auth0/nextjs-auth0/client';
 
 interface AppProps extends NextAppProps {
   emotionCache: EmotionCache;
@@ -27,7 +28,7 @@ const App: FC<AppProps> = ({
 
   useEffect(() => {
     const handleRouteChange = () => {
-      // Removed GoatCounter tracking
+      // Removed GoatCounter tracking or custom logic can be added here
     };
 
     router.events.on('routeChangeComplete', handleRouteChange);
@@ -38,20 +39,22 @@ const App: FC<AppProps> = ({
   }, [router.events]);
 
   return (
-    <CacheProvider value={emotionCache}>
-      <ThemeProvider theme={getTheme(theme)}>
-        <GoogleTagManagerScript />
-        <CssBaseline />
-        <Background>
-          <CookieConsent />
-          <Header />
-          <MainContainer as="main">
-            <Component {...pageProps} />
-          </MainContainer>
-          <Footer />
-        </Background>
-      </ThemeProvider>
-    </CacheProvider>
+    <UserProvider>
+      <CacheProvider value={emotionCache}>
+        <ThemeProvider theme={getTheme(theme)}>
+          <GoogleTagManagerScript />
+          <CssBaseline />
+          <Background>
+            <CookieConsent />
+            <Header />
+            <MainContainer as="main">
+              <Component {...pageProps} />
+            </MainContainer>
+            <Footer />
+          </Background>
+        </ThemeProvider>
+      </CacheProvider>
+    </UserProvider>
   );
 };
 

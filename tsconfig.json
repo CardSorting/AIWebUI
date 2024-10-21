@@ -18,7 +18,8 @@
       "@interfaces/*": ["src/interfaces/*"],
       "@layout": ["src/layout"],
       "@assets/*": ["public/assets/*"],
-      "@/*": ["src/*"]  // Add this line
+      "@/*": ["src/*"],
+      "@lib/*": ["src/lib/*"]
     },
     "allowJs": true,
     "skipLibCheck": true,

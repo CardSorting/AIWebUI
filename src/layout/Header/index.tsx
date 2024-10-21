@@ -1,16 +1,16 @@
 import React from 'react';
 import ThemeToggle from '@components/ThemeToggle';
-import { Hidden, Link, Toolbar, Typography, Box, useTheme, AppBar } from '@mui/material';
+import { Link, Toolbar, Typography, Box, useTheme, AppBar, useMediaQuery } from '@mui/material';
 import Routes from '@routes';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 import DesktopHeader from './DesktopHeader';
-import MobileHeader from './MobileHeader';
 import { InvisibleHeading } from './styles';
 
 const Header: React.FC = () => {
   const { pathname } = useRouter();
   const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   return (
     <>
@@ -52,15 +52,10 @@ const Header: React.FC = () => {
           </Box>
 
           <Box display="flex" alignItems="center">
-            <Hidden smDown>
-              <DesktopHeader />
-            </Hidden>
-            <Box ml={2}>
+            <DesktopHeader />
+            <Box ml={isMobile ? 0 : 2}>
               <ThemeToggle />
             </Box>
-            <Hidden mdUp>
-              <MobileHeader />
-            </Hidden>
           </Box>
         </Toolbar>
       </AppBar>

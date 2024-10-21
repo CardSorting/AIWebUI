@@ -34,7 +34,7 @@ export const useFileUpload = ({ onChange, setErrorMessage, onSuccess }: UseFileU
           onChange(file.name, reader.result);
           setFileNames(prev => [...prev, file.name]);
           if (onSuccess) {
-            onSuccess(`File uploaded successfully: ${filex.name}`);
+            onSuccess(`File uploaded successfully: ${file.name}`);
           }
         }
       };
