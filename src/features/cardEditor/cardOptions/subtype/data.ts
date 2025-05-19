@@ -26,6 +26,21 @@ import {
   water,
 } from '../type';
 
+import {
+  colorless,
+  dark,
+  dragon,
+  fairy,
+  fighting,
+  fire,
+  grass,
+  item,
+  lightning,
+  metal,
+  psychic,
+  water,
+} from '../type';
+
 const defaultPokemonTypes: number[] = [
   grass.id,
   fire.id,
