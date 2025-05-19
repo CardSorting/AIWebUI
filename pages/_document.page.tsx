@@ -4,7 +4,6 @@ import React from 'react';
 import { GlobalStyles, createEmotionCache } from '@css';
 import { fontFaces } from '@utils/fonts';
 import Favicon from '@components/Favicon';
-import { GoogleTagManagerNoScript } from '@features/analytics/components/GTM';
 
 export default class MyDocument extends Document {
   render() {
@@ -22,7 +21,6 @@ export default class MyDocument extends Document {
         <body>
           <Main />
           <NextScript />
-          <GoogleTagManagerNoScript />
         </body>
       </Html>
     );

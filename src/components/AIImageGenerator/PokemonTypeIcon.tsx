@@ -11,7 +11,12 @@ interface PokemonTypeIconProps {
   onSelect: (prompt: string) => void;
 }
 
-const PokemonTypeIcon: React.FC<PokemonTypeIconProps> = ({ type, Icon, prompt, onSelect }) => {
+const PokemonTypeIcon: React.FC<PokemonTypeIconProps> = ({
+  type,
+  Icon,
+  prompt,
+  onSelect,
+}) => {
   const handleClick = () => {
     onSelect(prompt);
   };
@@ -20,7 +25,10 @@ const PokemonTypeIcon: React.FC<PokemonTypeIconProps> = ({ type, Icon, prompt, o
     <Tooltip title={type} arrow>
       <span>
         {/* The span wrapper ensures Tooltip works correctly even if IconButton is disabled */}
-        <IconButton onClick={handleClick} aria-label={`Select ${type} type prompt`}>
+        <IconButton
+          onClick={handleClick}
+          aria-label={`Select ${type} type prompt`}
+        >
           <Icon fontSize="large" />
         </IconButton>
       </span>

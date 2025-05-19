@@ -1,5 +1,3 @@
-// src/components/inputs/FileUploader/index.tsx
-
 import React, { FC, useState, useCallback } from 'react';
 import {
   Button,
@@ -35,11 +33,14 @@ const FileUploader: FC<FileUploaderProps> = ({
     setSuccessMessage(message);
   }, []);
 
-  const handleChange = useCallback((name: string, url: string, metadata: any) => {
-    onChange(name, url, metadata);
-  }, [onChange]);
+  const handleChange = useCallback(
+    (name: string, data: string) => {
+      onChange(name, data, {}); // Pass an empty object as metadata if it's not needed
+    },
+    [onChange],
+  );
 
-  const { upload, isLoading, fileName } = useFileUpload({
+  const { upload, isLoading, fileNames } = useFileUpload({
     onChange: handleChange,
     setErrorMessage,
     onSuccess: handleSuccess,
@@ -69,9 +70,17 @@ const FileUploader: FC<FileUploaderProps> = ({
           variant="outlined"
           color="inherit"
           component="label"
-          startIcon={isLoading ? <CircularProgress color="inherit" size={20} /> : <UploadFileIcon />}
+          startIcon={
+            isLoading ? (
+              <CircularProgress color="inherit" size={20} />
+            ) : (
+              <UploadFileIcon />
+            )
+          }
         >
-          <ButtonLabel>{buttonText || (fileName ?? <>&nbsp;</>)}</ButtonLabel>
+          <ButtonLabel>
+            {buttonText || (fileNames.length > 0 ? fileNames[0] : <>&nbsp;</>)}
+          </ButtonLabel>
           <input
             id={`${slug}-input`}
             accept="image/*"
@@ -95,8 +104,16 @@ const FileUploader: FC<FileUploaderProps> = ({
         </Button>
       </Box>
       {errorMessage && <FormHelperText>{errorMessage}</FormHelperText>}
-      <Snackbar open={!!successMessage} autoHideDuration={6000} onClose={handleSnackbarClose}>
-        <Alert onClose={handleSnackbarClose} severity="success" sx={{ width: '100%' }}>
+      <Snackbar
+        open={!!successMessage}
+        autoHideDuration={6000}
+        onClose={handleSnackbarClose}
+      >
+        <Alert
+          onClose={handleSnackbarClose}
+          severity="success"
+          sx={{ width: '100%' }}
+        >
           {successMessage}
         </Alert>
       </Snackbar>

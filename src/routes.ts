@@ -16,8 +16,8 @@ const Routes = {
   PrivacyPolicy: '/privacy-policy',
   CookiePolicy: '/cookie-policy',
   Contact: '/contact',
-  SignIn: '/auth/signin',    // Added SignIn route
-  SignUp: '/auth/signup',    // Added SignUp route
+  SignIn: '/auth/signin', // Added SignIn route
+  SignUp: '/auth/signup', // Added SignUp route
   EMail: '',
   GitHub: {
     Home: '',

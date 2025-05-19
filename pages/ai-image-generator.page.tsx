@@ -3,24 +3,24 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { SEO } from '@layout';
 import AIImageGenerator from '@components/AIImageGenerator';
-import { 
-  Box, 
-  Typography, 
-  Paper, 
-  Button, 
-  Alert, 
-  CircularProgress, 
-  Snackbar, 
-  Grid, 
-  Card, 
-  CardContent, 
-  CardActions, 
+import {
+  Box,
+  Typography,
+  Paper,
+  Button,
+  Alert,
+  CircularProgress,
+  Snackbar,
+  Grid,
+  Card,
+  CardContent,
+  CardActions,
   Dialog,
   DialogTitle,
   DialogContent,
   DialogActions,
   IconButton,
-  Tooltip
+  Tooltip,
 } from '@mui/material';
 import Image from 'next/image';
 import { useAIImageGeneration } from '@components/AIImageGenerator/useAIImageGeneration';
@@ -49,12 +49,14 @@ const AIImageGeneratorPage: React.FC = () => {
     resetError,
     generatedImages,
     clearImages, // Function to clear images
-    cancelOngoingRequests
+    cancelOngoingRequests,
   } = useAIImageGeneration();
 
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [localError, setLocalError] = useState<string | null>(null);
-  const [selectedImage, setSelectedImage] = useState<ImageMetadata | null>(null); // For Modal
+  const [selectedImage, setSelectedImage] = useState<ImageMetadata | null>(
+    null,
+  ); // For Modal
 
   useEffect(() => {
     console.log('[AIImageGeneratorPage] Component mounted.');
@@ -76,28 +78,44 @@ const AIImageGeneratorPage: React.FC = () => {
    * @param prompt The prompt entered by the user.
    * @param options Optional image generation options.
    */
-  const handleImageGeneration = useCallback(async (prompt: string, options?: ImageGenerationOptions) => {
-    console.log('[AIImageGeneratorPage] Starting image generation with prompt:', prompt);
-    resetError();
-    setLocalError(null);
-    setSuccessMessage(null);
+  const handleImageGeneration = useCallback(
+    async (prompt: string, options?: ImageGenerationOptions) => {
+      console.log(
+        '[AIImageGeneratorPage] Starting image generation with prompt:',
+        prompt,
+      );
+      resetError();
+      setLocalError(null);
+      setSuccessMessage(null);
 
-    try {
-      const result = await generateImage(prompt, options);
-      if (result) {
-        if (result.imageUrl) {
-          console.log('[AIImageGeneratorPage] Image generated successfully:', result.imageUrl);
-          setSuccessMessage('Image generated successfully!');
-        } else {
-          console.warn('[AIImageGeneratorPage] Image generation completed, but no image URL was returned.');
-          setLocalError('Image generation completed, but no image was returned.');
+      try {
+        const result = await generateImage(prompt, options);
+        if (result) {
+          if (result.imageUrl) {
+            console.log(
+              '[AIImageGeneratorPage] Image generated successfully:',
+              result.imageUrl,
+            );
+            setSuccessMessage('Image generated successfully!');
+          } else {
+            console.warn(
+              '[AIImageGeneratorPage] Image generation completed, but no image URL was returned.',
+            );
+            setLocalError(
+              'Image generation completed, but no image was returned.',
+            );
+          }
         }
+      } catch (err) {
+        console.error(
+          '[AIImageGeneratorPage] Error during image generation:',
+          err,
+        );
+        setLocalError('An unexpected error occurred during image generation.');
       }
-    } catch (err) {
-      console.error('[AIImageGeneratorPage] Error during image generation:', err);
-      setLocalError('An unexpected error occurred during image generation.');
-    }
-  }, [generateImage, resetError]);
+    },
+    [generateImage, resetError],
+  );
 
   /**
    * Handles dismissing success and error messages.
@@ -147,7 +165,10 @@ const AIImageGeneratorPage: React.FC = () => {
 
   return (
     <>
-      <SEO title="AI Image Generator" description="Generate Pokémon card images using AI" />
+      <SEO
+        title="AI Image Generator"
+        description="Generate Pokémon card images using AI"
+      />
       <Box sx={{ maxWidth: 1200, margin: '0 auto', padding: 4 }}>
         {/* Header Section */}
         <Typography variant="h3" component="h1" gutterBottom align="center">
@@ -163,9 +184,9 @@ const AIImageGeneratorPage: React.FC = () => {
         >
           <Alert
             onClose={handleDismissMessage}
-            severity={successMessage ? "success" : "error"}
+            severity={successMessage ? 'success' : 'error'}
             sx={{ width: '100%' }}
-            data-testid={successMessage ? "success-alert" : "error-alert"}
+            data-testid={successMessage ? 'success-alert' : 'error-alert'}
           >
             {successMessage || localError}
           </Alert>
@@ -178,7 +199,14 @@ const AIImageGeneratorPage: React.FC = () => {
 
         {/* Loading Indicator During Image Generation */}
         {isGenerating && (
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', mb: 4 }}>
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              mb: 4,
+            }}
+          >
             <CircularProgress />
             <Typography variant="body1" sx={{ ml: 2 }}>
               Generating your image...
@@ -194,12 +222,24 @@ const AIImageGeneratorPage: React.FC = () => {
           {generatedImages.length > 0 ? (
             <>
               <Grid container spacing={4}>
-                {generatedImages.map((image) => (
+                {generatedImages.map(image => (
                   <Grid item xs={12} sm={6} md={4} key={image.id}>
-                    <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+                    <Card
+                      sx={{
+                        height: '100%',
+                        display: 'flex',
+                        flexDirection: 'column',
+                      }}
+                    >
                       {/* Optimized Image Component with Click to Open Modal */}
-                      <Box 
-                        sx={{ position: 'relative', width: '100%', height: 0, paddingBottom: '75%', cursor: 'pointer' }} 
+                      <Box
+                        sx={{
+                          position: 'relative',
+                          width: '100%',
+                          height: 0,
+                          paddingBottom: '75%',
+                          cursor: 'pointer',
+                        }}
                         onClick={() => setSelectedImage(image)}
                       >
                         <Image
@@ -208,7 +248,9 @@ const AIImageGeneratorPage: React.FC = () => {
                           layout="fill"
                           objectFit="cover"
                           onError={() => {
-                            console.error(`[AIImageGeneratorPage] Error loading image with ID ${image.id}.`);
+                            console.error(
+                              `[AIImageGeneratorPage] Error loading image with ID ${image.id}.`,
+                            );
                             setLocalError('Failed to load one or more images.');
                           }}
                         />
@@ -220,35 +262,52 @@ const AIImageGeneratorPage: React.FC = () => {
                       </CardContent>
                       <CardActions>
                         <Tooltip title="View Image">
-                          <IconButton 
-                            size="small" 
-                            color="primary" 
+                          <IconButton
+                            size="small"
+                            color="primary"
                             onClick={() => setSelectedImage(image)}
                             aria-label={`View image for prompt: ${image.prompt}`}
                           >
                             {/* Eye Icon SVG */}
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" style={{ width: '24px', height: '24px' }}>
-                              <path strokeLinecap="round" strokeLinejoin="round" d="M2.036 12.322a1.012 1.012 0 010-1.002C3.432 7.271 7.523 4 12 4c4.477 0 8.568 3.271 10.964 7.32a1.012 1.012 0 010 1.002C20.568 16.729 16.477 20 12 20c-4.477 0-8.568-3.271-10.964-7.678z" />
-                              <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              strokeWidth={1.5}
+                              stroke="currentColor"
+                              style={{ width: '24px', height: '24px' }}
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M2.036 12.322a1.012 1.012 0 010-1.002C3.432 7.271 7.523 4 12 4c4.477 0 8.568 3.271 10.964 7.32a1.012 1.012 0 010 1.002C20.568 16.729 16.477 20 12 20c-4.477 0-8.568-3.271-10.964-7.678z"
+                              />
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                              />
                             </svg>
                           </IconButton>
                         </Tooltip>
-                        <Button 
-                          size="small" 
-                          color="secondary" 
+                        <Button
+                          size="small"
+                          color="secondary"
                           onClick={() => {
                             if (image.imageUrl) {
                               navigator.clipboard.writeText(image.imageUrl);
-                              setSuccessMessage('Image URL copied to clipboard!');
+                              setSuccessMessage(
+                                'Image URL copied to clipboard!',
+                              );
                             }
                           }}
                           aria-label="Copy image URL to clipboard"
                         >
                           Copy URL
                         </Button>
-                        <Button 
-                          size="small" 
-                          color="success" 
+                        <Button
+                          size="small"
+                          color="success"
                           onClick={() => {
                             if (image.imageUrl) {
                               downloadImage(image.imageUrl, image.id);
@@ -300,7 +359,7 @@ const AIImageGeneratorPage: React.FC = () => {
                 position: 'absolute',
                 right: 8,
                 top: 8,
-                color: (theme) => theme.palette.grey[500],
+                color: theme => theme.palette.grey[500],
               }}
             >
               <CloseIcon />
@@ -318,7 +377,9 @@ const AIImageGeneratorPage: React.FC = () => {
                   borderRadius: 1,
                 }}
                 onError={() => {
-                  console.error(`[AIImageGeneratorPage] Error loading image with ID ${selectedImage.id}.`);
+                  console.error(
+                    `[AIImageGeneratorPage] Error loading image with ID ${selectedImage.id}.`,
+                  );
                   setLocalError('Failed to load the selected image.');
                 }}
               />
@@ -327,7 +388,11 @@ const AIImageGeneratorPage: React.FC = () => {
             )}
           </DialogContent>
           <DialogActions>
-            <Button onClick={() => setSelectedImage(null)} color="primary" aria-label="Close Image Modal">
+            <Button
+              onClick={() => setSelectedImage(null)}
+              color="primary"
+              aria-label="Close Image Modal"
+            >
               Close
             </Button>
           </DialogActions>

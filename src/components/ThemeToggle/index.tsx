@@ -1,4 +1,3 @@
-import { AnalyticsEvent, trackEvent } from '@features/analytics';
 import { useSettingsStore } from '@features/settings';
 import {
   Brightness4 as MoonIcon,
@@ -14,7 +13,7 @@ const ThemeToggle: FC = () => {
   const handleClick = useCallback(() => {
     const newTheme = themeMode === 'light' ? 'dark' : 'light';
     setThemeMode(newTheme);
-    trackEvent(AnalyticsEvent.ThemeSwitch, {
+   ThemeSwitch, {
       theme: newTheme,
     });
   }, [setThemeMode, themeMode]);

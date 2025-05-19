@@ -21,7 +21,7 @@ const rarityMap = {
   FAGold: 'goldenFullArtPokemon',
 };
 
-const organizeType = (typeName) => {
+const organizeType = typeName => {
   const DIRECTORY = './scripts/organize';
   const IN_DIRECTORY = `${DIRECTORY}/in/${typeName}`;
   const OUT_DIRECTORY = `${DIRECTORY}/out/${typeName.toLowerCase()}`;
@@ -30,7 +30,9 @@ const organizeType = (typeName) => {
    * This function can be used to organize files into the correct folders before adding them as assets
    */
   const organizeFiles = async () => {
-    const relativePaths = await fs.promises.readdir(IN_DIRECTORY, { withFileTypes: true });
+    const relativePaths = await fs.promises.readdir(IN_DIRECTORY, {
+      withFileTypes: true,
+    });
 
     const files = await Promise.all(
       relativePaths.map(async item => {
@@ -38,16 +40,12 @@ const organizeType = (typeName) => {
         return {
           name: item.name.replace('.png', ''),
           path: absolutePath,
-        }
+        };
       }),
     );
 
     files.forEach(file => {
-      if (![
-        '4_GX Basic',
-        '5_GX Stage 1',
-        '6_GX Stage 2',
-      ].includes(file.name)) {
+      if (!['4_GX Basic', '5_GX Stage 1', '6_GX Stage 2'].includes(file.name)) {
         return;
       }
 
@@ -63,13 +61,13 @@ const organizeType = (typeName) => {
       }
 
       fs.renameSync(file.path, `${writeToDir}/${rarityMap[rarity]}.png`);
-    })
+    });
   };
 
   (async () => {
     await organizeFiles();
   })();
-}
+};
 
 [
   'Colorless',

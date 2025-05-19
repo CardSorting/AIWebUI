@@ -39,17 +39,14 @@ const AIImageDialog: React.FC<AIImageDialogProps> = ({
         fullWidth
         variant="outlined"
         value={aiPrompt}
-        onChange={(e) => setAiPrompt(e.target.value)}
+        onChange={e => setAiPrompt(e.target.value)}
         multiline
         rows={4}
       />
     </DialogContent>
     <DialogActions>
       <Button onClick={onClose}>Cancel</Button>
-      <Button 
-        onClick={onGenerate} 
-        disabled={isGenerating || !aiPrompt.trim()}
-      >
+      <Button onClick={onGenerate} disabled={isGenerating || !aiPrompt.trim()}>
         {isGenerating ? 'Generating...' : 'Generate'}
       </Button>
     </DialogActions>

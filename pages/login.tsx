@@ -19,10 +19,29 @@ const LoginPage = () => {
 
   return (
     <>
-      <SEO title="Login" />
+      <SEO
+        title="Login"
+        description="Log in to access the AI Image Generator and other features of PlayMoreTCG."
+      />
       <Container maxWidth="sm">
-        <Box sx={{ mt: 8, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-          <Paper elevation={3} sx={{ p: 4, display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%' }}>
+        <Box
+          sx={{
+            mt: 8,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+          }}
+        >
+          <Paper
+            elevation={3}
+            sx={{
+              p: 4,
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              width: '100%',
+            }}
+          >
             <Typography component="h1" variant="h5" gutterBottom>
               Welcome to PlayMoreTCG
             </Typography>

@@ -45,7 +45,9 @@ const typeToIconMap: { [key: string]: React.ElementType } = {
 
 const ExamplePrompts: React.FC<ExamplePromptsProps> = ({ onSelectExample }) => {
   const [typePrompts, setTypePrompts] = useState<PromptType[]>([]);
-  const [promptState, setPromptState] = useState<{ [key: string]: string[] }>({});
+  const [promptState, setPromptState] = useState<{ [key: string]: string[] }>(
+    {},
+  );
 
   const shuffleArray = useCallback((array: string[]): string[] => {
     const shuffled = [...array];
@@ -58,8 +60,21 @@ const ExamplePrompts: React.FC<ExamplePromptsProps> = ({ onSelectExample }) => {
 
   const loadPrompts = useCallback(async () => {
     const types = [
-      'fire', 'water', 'grass', 'electric', 'psychic', 'ice', 'dark', 'fairy',
-      'fighting', 'ground', 'rock', 'bug', 'ghost', 'dragon', 'normal',
+      'fire',
+      'water',
+      'grass',
+      'electric',
+      'psychic',
+      'ice',
+      'dark',
+      'fairy',
+      'fighting',
+      'ground',
+      'rock',
+      'bug',
+      'ghost',
+      'dragon',
+      'normal',
     ];
 
     const loadedPrompts: PromptType[] = [];
@@ -70,7 +85,10 @@ const ExamplePrompts: React.FC<ExamplePromptsProps> = ({ onSelectExample }) => {
         const module = await import(`./types/${type}.json`);
         const prompts = module.default?.prompts || [];
         if (Array.isArray(prompts) && prompts.length > 0) {
-          loadedPrompts.push({ type: type.charAt(0).toUpperCase() + type.slice(1), prompts });
+          loadedPrompts.push({
+            type: type.charAt(0).toUpperCase() + type.slice(1),
+            prompts,
+          });
           initialPromptState[type] = shuffleArray(prompts);
         } else {
           console.warn(`No valid prompts found for type: ${type}`);
@@ -88,24 +106,29 @@ const ExamplePrompts: React.FC<ExamplePromptsProps> = ({ onSelectExample }) => {
     loadPrompts();
   }, [loadPrompts]);
 
-  const handleIconClick = useCallback((type: string) => {
-    setPromptState((prevState) => {
-      const currentPrompts = prevState[type.toLowerCase()] || [];
-      if (currentPrompts.length > 0) {
-        const [nextPrompt, ...remainingPrompts] = currentPrompts;
-        onSelectExample(nextPrompt);
+  const handleIconClick = useCallback(
+    (type: string) => {
+      setPromptState(prevState => {
+        const currentPrompts = prevState[type.toLowerCase()] || [];
+        if (currentPrompts.length > 0) {
+          const [nextPrompt, ...remainingPrompts] = currentPrompts;
+          onSelectExample(nextPrompt);
 
-        let updatedPrompts = remainingPrompts;
-        if (updatedPrompts.length === 0) {
-          const typePrompt = typePrompts.find(item => item.type.toLowerCase() === type.toLowerCase());
-          updatedPrompts = shuffleArray(typePrompt?.prompts || []);
+          let updatedPrompts = remainingPrompts;
+          if (updatedPrompts.length === 0) {
+            const typePrompt = typePrompts.find(
+              item => item.type.toLowerCase() === type.toLowerCase(),
+            );
+            updatedPrompts = shuffleArray(typePrompt?.prompts || []);
+          }
+
+          return { ...prevState, [type.toLowerCase()]: updatedPrompts };
         }
-
-        return { ...prevState, [type.toLowerCase()]: updatedPrompts };
-      }
-      return prevState;
-    });
-  }, [onSelectExample, shuffleArray, typePrompts]);
+        return prevState;
+      });
+    },
+    [onSelectExample, shuffleArray, typePrompts],
+  );
 
   return (
     <Box>
@@ -113,7 +136,7 @@ const ExamplePrompts: React.FC<ExamplePromptsProps> = ({ onSelectExample }) => {
         Choose a Pokémon Type to Populate an Example Prompt:
       </Typography>
       <Grid container spacing={2}>
-        {typePrompts.map((item) => {
+        {typePrompts.map(item => {
           const IconComponent = typeToIconMap[item.type];
           if (!IconComponent) {
             console.warn(`No icon found for type: ${item.type}`);

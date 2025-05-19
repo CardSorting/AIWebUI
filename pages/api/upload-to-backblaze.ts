@@ -28,7 +28,10 @@ function saveMetadata(metadata: any) {
   fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
 }
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
@@ -52,7 +55,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
       await b2.authorize();
 
-      const { data: { uploadUrl, authorizationToken } } = await b2.getUploadUrl({
+      const {
+        data: { uploadUrl, authorizationToken },
+      } = await b2.getUploadUrl({
         bucketId: process.env.B2_BUCKET_ID as string,
       });
 

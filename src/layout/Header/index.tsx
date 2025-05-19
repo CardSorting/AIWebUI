@@ -1,6 +1,14 @@
 import React from 'react';
 import ThemeToggle from '@components/ThemeToggle';
-import { Link, Toolbar, Typography, Box, useTheme, AppBar, useMediaQuery } from '@mui/material';
+import {
+  Link,
+  Toolbar,
+  Typography,
+  Box,
+  useTheme,
+  AppBar,
+  useMediaQuery,
+} from '@mui/material';
 import Routes from '@routes';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
@@ -17,29 +25,32 @@ const Header: React.FC = () => {
       {(pathname === Routes.Home || pathname === Routes.Creator) && (
         <InvisibleHeading>PlayMoreTCG</InvisibleHeading>
       )}
-      <AppBar 
-        position="sticky" 
-        color="primary" 
+      <AppBar
+        position="sticky"
+        color="primary"
         elevation={0}
         sx={{
           borderBottom: `1px solid ${theme.palette.divider}`,
           backdropFilter: 'blur(20px)',
           backgroundColor: 'rgba(255, 255, 255, 0.8)', // Adjust for dark mode compatibility
-          transition: theme.transitions.create(['background-color', 'box-shadow', 'color'], {
-            duration: theme.transitions.duration.short,
-          }),
+          transition: theme.transitions.create(
+            ['background-color', 'box-shadow', 'color'],
+            {
+              duration: theme.transitions.duration.short,
+            },
+          ),
         }}
       >
         <Toolbar sx={{ justifyContent: 'space-between' }}>
           <Box display="flex" alignItems="center">
             <NextLink href={Routes.Home} passHref>
-              <Typography 
-                variant="h1" 
-                component={Link} 
+              <Typography
+                variant="h1"
+                component={Link}
                 color="primary"
-                sx={{ 
-                  fontSize: '1.5rem', 
-                  fontWeight: 'bold', 
+                sx={{
+                  fontSize: '1.5rem',
+                  fontWeight: 'bold',
                   textDecoration: 'none',
                   '&:hover': {
                     color: theme.palette.secondary.main,

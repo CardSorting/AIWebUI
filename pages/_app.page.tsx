@@ -4,12 +4,8 @@ import { AppProps as NextAppProps } from 'next/app';
 import { FC, useEffect } from 'react';
 import { createEmotionCache } from '@css';
 import { Footer, Header } from '@layout';
-import CookieConsent from '@components/CookieConsent';
-import { GoogleTagManagerScript } from '@features/analytics/components/GTM';
 import { useRouter } from 'next/router';
 import { useSettingsStore } from '@features/settings';
-import { getTheme } from '@utils/theme';
-import { Background, MainContainer } from './styles';
 import { UserProvider } from '@auth0/nextjs-auth0/client';
 
 interface AppProps extends NextAppProps {

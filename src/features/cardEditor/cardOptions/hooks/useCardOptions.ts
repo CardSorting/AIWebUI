@@ -1,14 +1,10 @@
 import shallow from 'zustand/shallow';
-import { CardInterface } from '@cardEditor';
+import { CardInterface, CroppableCardImg } from '@cardEditor/types';
 import { useCardOptionsStore } from '../store';
 
-const useCardOptions = <
-  T extends Partial<CardInterface>,
-  // @ts-expect-error - This is right
-  V extends T = { [P in keyof T]: CardInterface[P] },
->(
-  properties: (keyof T)[],
-): V & { 
+const useCardOptions = <K extends keyof CardInterface>(
+  properties: K[],
+): Pick<CardInterface, K> & {
   setState: (values: Partial<CardInterface>) => void;
   setCardImage: (imageUrl: string) => void;
 } => {
@@ -17,7 +13,7 @@ const useCardOptions = <
       ...properties.reduce<Partial<CardInterface>>(
         (obj, key) => ({
           ...obj,
-          [key]: store.state[key as keyof CardInterface],
+          [key]: store.state[key],
         }),
         {},
       ),
@@ -27,11 +23,26 @@ const useCardOptions = <
   );
 
   const setCardImage = (imageUrl: string) => {
-    setStateValues({ cardImage: imageUrl });
+    const newImage: CroppableCardImg = {
+      id: Date.now().toString(),
+      name: 'Uploaded Image',
+      src: imageUrl,
+      order: 0,
+      behindTemplate: false,
+      croppedArea: undefined,
+    };
+
+    // Ensure 'images' is included in 'properties' or handle undefined
+    const currentImages = (values as Partial<CardInterface>).images || [];
+    const updatedImages = [...currentImages, newImage];
+
+    setStateValues({
+      images: updatedImages,
+    });
   };
 
   return {
-    ...(values as V),
+    ...(values as Pick<CardInterface, K>),
     setState: setStateValues,
     setCardImage,
   };

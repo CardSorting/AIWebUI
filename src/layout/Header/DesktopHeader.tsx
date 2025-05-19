@@ -1,18 +1,35 @@
 import { FC, useState } from 'react';
 import { useRouter } from 'next/router';
 import NextLink from 'next/link';
-import { useTheme, useMediaQuery, Box, Button, IconButton, Menu, MenuItem, Link } from '@mui/material';
-import { Forward as ForwardIcon, Menu as MenuIcon } from '@mui/icons-material';
+import { useUser } from '@auth0/nextjs-auth0/client';
+import {
+  useTheme,
+  useMediaQuery,
+  Box,
+  Button,
+  IconButton,
+  Menu,
+  MenuItem,
+  Link,
+} from '@mui/material';
+import {
+  Forward as ForwardIcon,
+  Menu as MenuIcon,
+  Login as LoginIcon,
+  Logout as LogoutIcon,
+} from '@mui/icons-material';
 import Routes from '@routes';
 import { NavItems } from './styles';
 
 const DesktopHeader: FC = () => {
   const { pathname } = useRouter();
+  const { user, isLoading } = useUser();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
-  if (pathname === Routes.Creator || pathname === Routes.ImageUploadAndOrder) return null;
+  if (pathname === Routes.Creator || pathname === Routes.ImageUploadAndOrder)
+    return null;
 
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -26,11 +43,11 @@ const DesktopHeader: FC = () => {
   const buttonStyle = {
     mx: { xs: 0, sm: 1 },
     my: { xs: 1, sm: 0 },
-    px: 2,
+    px: { xs: 1, sm: 2 },
     py: 1,
     borderRadius: '20px',
     transition: 'all 0.3s ease-in-out',
-    fontSize: '0.875rem',
+    fontSize: { xs: '0.75rem', sm: '0.875rem' },
     textTransform: 'none',
     fontWeight: 500,
     width: { xs: '100%', sm: 'auto' },
@@ -54,33 +71,56 @@ const DesktopHeader: FC = () => {
             color: theme.palette.secondary.contrastText,
           }}
         >
-          Get Started Now
+          <Box component="span" sx={{ display: { xs: 'none', sm: 'inline' } }}>
+            Get Started
+          </Box>
+          <Box component="span" sx={{ display: { xs: 'inline', sm: 'none' } }}>
+            Start
+          </Box>
         </Button>
       </NextLink>
-      <Link
-        href="https://patreon.com/PlayMoreTCG?utm_medium=unknown&utm_source=join_link&utm_campaign=creatorshare_creator&utm_content=copyLink"
-        target="_blank"
-        rel="noopener"
-        sx={{
-          mx: { xs: 0, sm: 2 },
-          my: { xs: 1, sm: 0 },
-          textDecoration: 'none',
-          fontWeight: 'bold',
-          color: theme.palette.primary.main,
-          '&:hover': {
-            color: theme.palette.secondary.main,
-          },
-          width: { xs: '100%', sm: 'auto' },
-          textAlign: { xs: 'center', sm: 'left' },
-        }}
-      >
-        Support me on Patreon
-      </Link>
+      {isLoading ? (
+        <Button disabled sx={buttonStyle}>
+          Loading...
+        </Button>
+      ) : user ? (
+        <Button
+          href="/api/auth/logout"
+          variant="outlined"
+          color="primary"
+          startIcon={<LogoutIcon />}
+          sx={buttonStyle}
+        >
+          <Box component="span" sx={{ display: { xs: 'none', sm: 'inline' } }}>
+            Logout
+          </Box>
+        </Button>
+      ) : (
+        <Button
+          href="/api/auth/login"
+          variant="outlined"
+          color="primary"
+          startIcon={<LoginIcon />}
+          sx={buttonStyle}
+        >
+          <Box component="span" sx={{ display: { xs: 'none', sm: 'inline' } }}>
+            Login
+          </Box>
+        </Button>
+      )}
     </>
   );
 
   return (
-    <Box display="flex" alignItems="center" justifyContent="space-between" sx={{ padding: { xs: '10px 0', sm: '20px 0' } }}>
+    <Box
+      display="flex"
+      alignItems="center"
+      justifyContent="flex-end"
+      sx={{
+        padding: { xs: '10px 0', sm: '20px 0' },
+        width: '100%',
+      }}
+    >
       {isMobile ? (
         <>
           <IconButton
@@ -107,7 +147,14 @@ const DesktopHeader: FC = () => {
             open={Boolean(anchorEl)}
             onClose={handleClose}
           >
-            <MenuItem onClick={handleClose} sx={{ flexDirection: 'column', alignItems: 'flex-start' }}>
+            <MenuItem
+              onClick={handleClose}
+              sx={{
+                flexDirection: 'column',
+                alignItems: 'flex-start',
+                width: '100%',
+              }}
+            >
               {navContent}
             </MenuItem>
           </Menu>

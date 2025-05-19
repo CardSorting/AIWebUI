@@ -7,7 +7,7 @@ import { FileUploaderProps } from '@components/inputs/FileUploader/types';
 
 // Remove the AIImageGenerator import and related logic
 
-const ImageUploadSection: FC<FileUploaderProps> = (props) => {
+const ImageUploadSection: FC<FileUploaderProps> = props => {
   // Remove AI image generation related state and functions
 
   return (

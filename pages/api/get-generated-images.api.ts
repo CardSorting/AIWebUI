@@ -1,8 +1,6 @@
-// src/pages/api/get-generated-images.api.ts
-
 import { NextApiRequest, NextApiResponse } from 'next';
-import { databaseAPI } from '@lib/DatabaseAPI';
-import { ImageMetadata } from '@lib/DatabaseAPI';
+import { getSession } from '@auth0/nextjs-auth0';
+import { databaseAPI, ImageMetadata } from '@lib/DatabaseAPI';
 
 interface ApiResponse {
   images: ImageMetadata[];
@@ -17,30 +15,40 @@ export const config = {
   },
 };
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
   if (req.method !== 'GET') {
     console.warn(`Method ${req.method} not allowed`);
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const limit = parseInt(req.query.limit as string) || 20;
-  const page = parseInt(req.query.page as string) || 1;
+  const session = await getSession(req, res);
+  if (!session || !session.user) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
 
-  console.log(`Fetching generated images. Limit: ${limit}, Page: ${page}`);
+  const limit = parseInt(req.query.limit as string) || 20;
+
+  console.log(`Fetching generated images. Limit: ${limit}`);
 
   try {
     await databaseAPI.initialize();
 
-    const offset = (page - 1) * limit;
-    const generatedImages = await databaseAPI.getRecentImages(limit, offset);
-    const totalCount = await databaseAPI.getTotalImageCount();
+    const [generatedImages, totalCount] = await Promise.all([
+      databaseAPI.getRecentImages(limit),
+      databaseAPI.getTotalImageCount(),
+    ]);
 
     const responsePayload: ApiResponse = {
       images: generatedImages,
       totalCount: totalCount,
     };
 
-    console.log(`Successfully fetched ${generatedImages.length} images. Total count: ${totalCount}`);
+    console.log(
+      `Successfully fetched ${generatedImages.length} images. Total count: ${totalCount}`,
+    );
 
     return res.status(200).json(responsePayload);
   } catch (error) {
@@ -75,7 +83,7 @@ function handleError(error: unknown, res: NextApiResponse) {
       error: 'Failed to fetch generated images',
       message: errorMessage,
       timestamp: new Date().toISOString(),
-      requestId: res.req.headers['x-request-id'] || 'unknown'
+      requestId: res.req.headers['x-request-id'] || 'unknown',
     });
   } else {
     console.error('Unknown error structure:', error);
@@ -83,7 +91,7 @@ function handleError(error: unknown, res: NextApiResponse) {
       error: 'An unexpected error occurred',
       message: 'An unknown error occurred while processing your request.',
       timestamp: new Date().toISOString(),
-      requestId: res.req.headers['x-request-id'] || 'unknown'
+      requestId: res.req.headers['x-request-id'] || 'unknown',
     });
   }
 }
