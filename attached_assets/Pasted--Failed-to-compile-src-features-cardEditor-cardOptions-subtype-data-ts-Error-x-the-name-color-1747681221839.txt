@@ -1,0 +1,292 @@
+
+Failed to compile
+./src/features/cardEditor/cardOptions/subtype/data.ts
+Error: 
+  x the name `colorless` is defined multiple times
+    ,-[15:3]
+ 15 | colorless,
+    : ^^^^|^^^^
+    :     `-- previous definition of `colorless` here
+ 16 |   dark,
+ 17 |   dragon,
+ 18 |   fairy,
+ 19 |   fighting,
+ 20 |   fire,
+ 21 |   grass,
+ 22 |   item,
+ 23 |   lightning,
+ 24 |   metal,
+ 25 |   psychic,
+ 26 |   water,
+ 27 | } from '../type';
+ 28 | 
+ 29 | import {
+ 30 |   colorless,
+    :   ^^^^|^^^^
+    :       `-- `colorless` redefined here
+    `----
+
+  x the name `dark` is defined multiple times
+    ,-[16:3]
+ 16 | dark,
+    : ^^|^
+    :   `-- previous definition of `dark` here
+ 17 |   dragon,
+ 18 |   fairy,
+ 19 |   fighting,
+ 20 |   fire,
+ 21 |   grass,
+ 22 |   item,
+ 23 |   lightning,
+ 24 |   metal,
+ 25 |   psychic,
+ 26 |   water,
+ 27 | } from '../type';
+ 28 | 
+ 29 | import {
+ 30 |   colorless,
+ 31 |   dark,
+    :   ^^|^
+    :     `-- `dark` redefined here
+    `----
+
+  x the name `dragon` is defined multiple times
+    ,-[17:3]
+ 17 | dragon,
+    : ^^^|^^
+    :    `-- previous definition of `dragon` here
+ 18 |   fairy,
+ 19 |   fighting,
+ 20 |   fire,
+ 21 |   grass,
+ 22 |   item,
+ 23 |   lightning,
+ 24 |   metal,
+ 25 |   psychic,
+ 26 |   water,
+ 27 | } from '../type';
+ 28 | 
+ 29 | import {
+ 30 |   colorless,
+ 31 |   dark,
+ 32 |   dragon,
+    :   ^^^|^^
+    :      `-- `dragon` redefined here
+    `----
+
+  x the name `fairy` is defined multiple times
+    ,-[18:3]
+ 18 | fairy,
+    : ^^|^^
+    :   `-- previous definition of `fairy` here
+ 19 |   fighting,
+ 20 |   fire,
+ 21 |   grass,
+ 22 |   item,
+ 23 |   lightning,
+ 24 |   metal,
+ 25 |   psychic,
+ 26 |   water,
+ 27 | } from '../type';
+ 28 | 
+ 29 | import {
+ 30 |   colorless,
+ 31 |   dark,
+ 32 |   dragon,
+ 33 |   fairy,
+    :   ^^|^^
+    :     `-- `fairy` redefined here
+    `----
+
+  x the name `fighting` is defined multiple times
+    ,-[19:3]
+ 19 | fighting,
+    : ^^^^|^^^
+    :     `-- previous definition of `fighting` here
+ 20 |   fire,
+ 21 |   grass,
+ 22 |   item,
+ 23 |   lightning,
+ 24 |   metal,
+ 25 |   psychic,
+ 26 |   water,
+ 27 | } from '../type';
+ 28 | 
+ 29 | import {
+ 30 |   colorless,
+ 31 |   dark,
+ 32 |   dragon,
+ 33 |   fairy,
+ 34 |   fighting,
+    :   ^^^^|^^^
+    :       `-- `fighting` redefined here
+    `----
+
+  x the name `fire` is defined multiple times
+    ,-[20:3]
+ 20 | fire,
+    : ^^|^
+    :   `-- previous definition of `fire` here
+ 21 |   grass,
+ 22 |   item,
+ 23 |   lightning,
+ 24 |   metal,
+ 25 |   psychic,
+ 26 |   water,
+ 27 | } from '../type';
+ 28 | 
+ 29 | import {
+ 30 |   colorless,
+ 31 |   dark,
+ 32 |   dragon,
+ 33 |   fairy,
+ 34 |   fighting,
+ 35 |   fire,
+    :   ^^|^
+    :     `-- `fire` redefined here
+    `----
+
+  x the name `grass` is defined multiple times
+    ,-[21:3]
+ 21 | grass,
+    : ^^|^^
+    :   `-- previous definition of `grass` here
+ 22 |   item,
+ 23 |   lightning,
+ 24 |   metal,
+ 25 |   psychic,
+ 26 |   water,
+ 27 | } from '../type';
+ 28 | 
+ 29 | import {
+ 30 |   colorless,
+ 31 |   dark,
+ 32 |   dragon,
+ 33 |   fairy,
+ 34 |   fighting,
+ 35 |   fire,
+ 36 |   grass,
+    :   ^^|^^
+    :     `-- `grass` redefined here
+    `----
+
+  x the name `item` is defined multiple times
+    ,-[22:3]
+ 22 | item,
+    : ^^|^
+    :   `-- previous definition of `item` here
+ 23 |   lightning,
+ 24 |   metal,
+ 25 |   psychic,
+ 26 |   water,
+ 27 | } from '../type';
+ 28 | 
+ 29 | import {
+ 30 |   colorless,
+ 31 |   dark,
+ 32 |   dragon,
+ 33 |   fairy,
+ 34 |   fighting,
+ 35 |   fire,
+ 36 |   grass,
+ 37 |   item,
+    :   ^^|^
+    :     `-- `item` redefined here
+    `----
+
+  x the name `lightning` is defined multiple times
+    ,-[23:3]
+ 23 | lightning,
+    : ^^^^|^^^^
+    :     `-- previous definition of `lightning` here
+ 24 |   metal,
+ 25 |   psychic,
+ 26 |   water,
+ 27 | } from '../type';
+ 28 | 
+ 29 | import {
+ 30 |   colorless,
+ 31 |   dark,
+ 32 |   dragon,
+ 33 |   fairy,
+ 34 |   fighting,
+ 35 |   fire,
+ 36 |   grass,
+ 37 |   item,
+ 38 |   lightning,
+    :   ^^^^|^^^^
+    :       `-- `lightning` redefined here
+    `----
+
+  x the name `metal` is defined multiple times
+    ,-[24:3]
+ 24 | metal,
+    : ^^|^^
+    :   `-- previous definition of `metal` here
+ 25 |   psychic,
+ 26 |   water,
+ 27 | } from '../type';
+ 28 | 
+ 29 | import {
+ 30 |   colorless,
+ 31 |   dark,
+ 32 |   dragon,
+ 33 |   fairy,
+ 34 |   fighting,
+ 35 |   fire,
+ 36 |   grass,
+ 37 |   item,
+ 38 |   lightning,
+ 39 |   metal,
+    :   ^^|^^
+    :     `-- `metal` redefined here
+    `----
+
+  x the name `psychic` is defined multiple times
+    ,-[25:3]
+ 25 | psychic,
+    : ^^^|^^^
+    :    `-- previous definition of `psychic` here
+ 26 |   water,
+ 27 | } from '../type';
+ 28 | 
+ 29 | import {
+ 30 |   colorless,
+ 31 |   dark,
+ 32 |   dragon,
+ 33 |   fairy,
+ 34 |   fighting,
+ 35 |   fire,
+ 36 |   grass,
+ 37 |   item,
+ 38 |   lightning,
+ 39 |   metal,
+ 40 |   psychic,
+    :   ^^^|^^^
+    :      `-- `psychic` redefined here
+    `----
+
+  x the name `water` is defined multiple times
+    ,-[26:3]
+ 26 | water,
+    : ^^|^^
+    :   `-- previous definition of `water` here
+ 27 | } from '../type';
+ 28 | 
+ 29 | import {
+ 30 |   colorless,
+ 31 |   dark,
+ 32 |   dragon,
+ 33 |   fairy,
+ 34 |   fighting,
+ 35 |   fire,
+ 36 |   grass,
+ 37 |   item,
+ 38 |   lightning,
+ 39 |   metal,
+ 40 |   psychic,
+ 41 |   water,
+    :   ^^|^^
+    :     `-- `water` redefined here
+    `----
+This error occurred during the build process and can only be dismissed by fixing the error.
